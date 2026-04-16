@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 48 48">
+  <linearGradient id="a" x1="32.9687" x2="32.9687" y1="36.5104" y2="-11.4896" gradientTransform="matrix(.9796 0 0 -.9796 -8.2959 36.2551)" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#8ddbff"/>
+    <stop offset="1" stop-color="#c8edff"/>
+  </linearGradient>
+  <path fill="url(#a)" d="M.5 24C.5 4.6 4.6.5 24 .5S47.5 4.6 47.5 24 43.4 47.5 24 47.5.5 43.4.5 24z"/>
+  <radialGradient id="b" cx="23.5102" cy="34.021" r="12.8133" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".4"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <path fill="url(#b)" d="M23.5 21.2c7.1 0 12.8 5.7 12.8 12.8 0 7.1-5.7 12.8-12.8 12.8-7.1 0-12.8-5.7-12.8-12.8 0-7.1 5.7-12.8 12.8-12.8z"/>
+  <linearGradient id="c" x1="31.9687" x2="31.9687" y1="19.5104" y2="1.5105" gradientTransform="matrix(.9796 0 0 -.9796 -8.2959 36.2551)" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#006dbc"/>
+    <stop offset="1" stop-color="#00a3ef"/>
+  </linearGradient>
+  <path fill="url(#c)" d="M14.2 18.7c0-.9.7-1.6 1.6-1.6h14.5c.9 0 1.6.7 1.6 1.6v14.9c0 1.1-1.3 1.6-2 .9l-2.1-2.2c-.6-.6-1.4-.6-1.8-.6H15.8c-.9 0-1.6-.7-1.6-1.6V18.7z"/>
+  <linearGradient id="d" x1="40.8089" x2="41.1286" y1="12.5118" y2="26.5096" gradientTransform="matrix(.9796 0 0 -.9796 -8.2959 36.2551)" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff"/>
+    <stop offset=".485" stop-color="#ffb800"/>
+    <stop offset="1" stop-color="#f90"/>
+  </linearGradient>
+  <path fill="url(#d)" d="M31.8 24c-1.3 0-2.5-.3-3.5-.9-1-.6-1.8-1.4-2.5-2.4-.6-1-.9-2.2-.9-3.6s.3-2.5.9-3.6c.6-1 1.4-1.8 2.5-2.4 1-.6 2.2-.9 3.5-.9 1.3 0 2.4.3 3.5.9 1 .6 1.9 1.4 2.5 2.4.6 1 .9 2.2.9 3.6s-.3 2.5-.9 3.6c-.6 1-1.4 1.8-2.5 2.4-1 .6-2.2.9-3.5.9z"/>
+  <path fill="none" stroke="#000" stroke-miterlimit="3.9184" stroke-opacity=".1" stroke-width=".4898" d="M.7 24c0-4.8.3-8.7.9-11.8.7-3.1 1.8-5.4 3.5-7.1s4-2.8 7.1-3.5c3.1-.7 7-.9 11.8-.9s8.7.3 11.8 1c3.1.7 5.4 1.8 7.1 3.5 1.7 1.7 2.8 4 3.5 7.1.7 3.1.9 7 .9 11.8s-.3 8.7-.9 11.8c-.7 3.1-1.8 5.4-3.5 7.1-1.7 1.7-4 2.8-7.1 3.5-3.1.7-7 .9-11.8.9s-8.7-.3-11.8-.9c-3.1-.7-5.4-1.8-7.1-3.5-1.7-1.7-2.8-4-3.5-7.1C1 32.7.7 28.8.7 24z"/>
+</svg>

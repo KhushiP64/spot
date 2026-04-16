@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "799389945462",
+    "project_id": "spot-32b4e",
+    "storage_bucket": "spot-32b4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799389945462:android:148770134f835aac875957",
+        "android_client_info": {
+          "package_name": "com.enliven.spot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoo2SDYGADZ6bhSjfE3M55dACWybQZoR8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
