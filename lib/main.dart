@@ -166,6 +166,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     checkLoginStatus();
+    print("message from home mac pc ");
   }
 
   @override
