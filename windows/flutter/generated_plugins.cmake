@@ -9,7 +9,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_auth
   firebase_core
   permission_handler_windows
-  quill_native_bridge_windows
   url_launcher_windows
 )
 
