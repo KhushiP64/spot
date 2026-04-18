@@ -7,9 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spot/core/media.dart';
-import 'package:spot/core/responsive_fonts.dart';
+import 'package:spot/core/themes.dart';
 import 'package:spot/providers/chat_provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:video_player/video_player.dart';
 import '../../../core/utils.dart';
 import '../../../providers/data_list_provider.dart';
 import '../../../providers/group_provider.dart';
@@ -20,12 +21,13 @@ class ImagePreview extends StatefulWidget {
   final String imgName;
   final Map<String, dynamic> messageItem;
   final bool isVideo;
-  const ImagePreview(
-      {super.key,
-      required this.imgUrl,
-      required this.imgName,
-      required this.messageItem,
-      this.isVideo = false});
+  const ImagePreview({
+    super.key,
+    required this.imgUrl,
+    required this.imgName,
+    required this.messageItem,
+    this.isVideo = false
+  });
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -37,6 +39,8 @@ class _ImagePreviewState extends State<ImagePreview> {
   final TextEditingController tDescription = TextEditingController();
   TextEditingController searchAddUser = TextEditingController();
   Map<String, dynamic> currentUserData = {};
+  VideoPlayerController? _videoController;
+  bool _isVideoInitialized = false;
 
   bool isGroupNameNotValid = true;
   bool isSubmit = false;
@@ -46,13 +50,27 @@ class _ImagePreviewState extends State<ImagePreview> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController searchController = TextEditingController();
 
-  final TransformationController _transformationController =
-      TransformationController();
+  final TransformationController _transformationController = TransformationController();
   TapDownDetails? _doubleTapDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isVideo) {
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.imgUrl))
+        ..initialize().then((_) {
+          setState(() {
+            _isVideoInitialized = true;
+          });
+          _videoController!.play();
+        });
+    }
+  }
 
   @override
   void dispose() {
     _transformationController.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -189,6 +207,65 @@ class _ImagePreviewState extends State<ImagePreview> {
     }
   }
 
+  Widget _buildCustomProgressBar() {
+    return ValueListenableBuilder(
+      valueListenable: _videoController!,
+      builder: (context, VideoPlayerValue value, child) {
+        // Calculate current position and total duration in milliseconds
+        final int duration = value.duration.inMilliseconds;
+        final int position = value.position.inMilliseconds;
+
+        return Container(
+          color: AppColorTheme.black.withOpacity(0.2),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _formatDuration(value.position),
+                style: AppFontStyles.dmSansBold.copyWith(color: AppColorTheme.white, fontSize: 12.sp),
+              ),
+              Expanded(
+                child: SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    // This creates the "Round" handle you want
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0.w),
+                    overlayShape: RoundSliderOverlayShape(overlayRadius: 12.0.w),
+                    trackHeight: 2.0.h,
+                    activeTrackColor: AppColorTheme.primaryHover,
+                    inactiveTrackColor: AppColorTheme.white.withOpacity(0.9),
+                    thumbColor: AppColorTheme.primaryHover,
+                  ),
+                  child: Slider(
+                    value: position.toDouble().clamp(0.0, duration.toDouble()),
+                    min: 0.0,
+                    max: duration.toDouble(),
+                    onChanged: (double newValue) {
+                      // Seek to the new position when the user drags the round thumb
+                      _videoController!.seekTo(Duration(milliseconds: newValue.toInt()));
+                    },
+                  ),
+                ),
+              ),
+              Text(
+                _formatDuration(value.duration),
+                style: AppFontStyles.dmSansBold.copyWith(color: AppColorTheme.white, fontSize: 12.sp),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+// Helper to format 00:00 time
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -207,31 +284,20 @@ class _ImagePreviewState extends State<ImagePreview> {
             borderRadius: BorderRadius.all(Radius.circular(6.r)),
             boxShadow: [
               BoxShadow(
-                  color: AppColorTheme.secondary.withOpacity(0.2),
-                  offset: Offset(0, 1),
-                  blurRadius: 6,
-                  spreadRadius: 0),
+                color: AppColorTheme.secondary.withOpacity(0.2),
+                offset: Offset(0, 1),
+                blurRadius: 6,
+                spreadRadius: 0
+              ),
             ],
           ),
           child: OutlinedButton.icon(
             onPressed: handleOnClickReplyMsg,
-            icon: Icon(
-              FeatherIcons.cornerUpLeft,
-              color: Colors.black,
-              size: 16.w,
-            ),
-            label: Text(
-              "Reply",
-              style: AppFontStyles.dmSansRegular.copyWith(
-                color: Colors.black,
-                fontSize: 14.sp,
-              ),
-            ),
+            icon: Icon(FeatherIcons.cornerUpLeft, color: Colors.black, size: 16.w),
+            label: Text("Reply", style: AppFontStyles.dmSansRegular.copyWith(color: Colors.black, fontSize: 14.sp)),
             style: OutlinedButton.styleFrom(
               backgroundColor: Colors.white.withOpacity(0.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
               side: BorderSide.none,
             ),
           ),
@@ -240,8 +306,7 @@ class _ImagePreviewState extends State<ImagePreview> {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(
-                    left: 6.w, right: 12.w, top: 12.h, bottom: 20.h),
+                padding: EdgeInsets.only(left: 6.w, right: 12.w, top: 12.h, bottom: 20.h),
                 color: AppColorTheme.lightPrimary,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -250,9 +315,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                       children: [
                         GestureDetector(
                           onTap: onPressBack,
-                          child: SvgPicture.asset(
-                            AppMedia.leftArrow,
-                          ),
+                          child: SvgPicture.asset(AppMedia.leftArrow),
                         ),
                         SizedBox(width: 16.w),
                         ConstrainedBox(
@@ -263,9 +326,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                             widget.imgName,
                             softWrap: true,
                             overflow: TextOverflow.ellipsis,
-                            style: AppFontStyles.dmSansRegular.copyWith(
-                                fontSize: 16.sp,
-                                color: AppColorTheme.inputTitle),
+                            style: AppFontStyles.dmSansRegular.copyWith(fontSize: 16.sp, color: AppColorTheme.inputTitle),
                           ),
                         ),
                       ],
@@ -286,34 +347,103 @@ class _ImagePreviewState extends State<ImagePreview> {
                   ],
                 ),
               ),
+
               Expanded(
                 child: Center(
                   child: GestureDetector(
                     onDoubleTapDown: (details) => _doubleTapDetails = details,
                     onDoubleTap: _handleDoubleTap,
-                    child: InteractiveViewer(
-                      transformationController: _transformationController,
-                      minScale: 0.5,
-                      maxScale: 4,
-                      child: Image.network(
-                        widget.imgUrl,
-                        fit: BoxFit.contain,
-                        width: double.infinity,
-                        height: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(
-                              child: CircularProgressIndicator(
-                                  color: AppColorTheme.primaryHover));
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Icon(Icons.broken_image,
-                                color: Colors.white, size: 50),
-                          );
-                        },
+                    child: widget.isVideo
+                      ? _isVideoInitialized
+                        ? Center(
+                          child: AspectRatio(
+                            aspectRatio: _videoController!.value.aspectRatio,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                /// Video player
+                                VideoPlayer(_videoController!),
+
+                                /// Video play / pause button
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _videoController!.value.isPlaying
+                                        ? _videoController!.pause()
+                                        : _videoController!.play();
+                                    });
+                                  },
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Center(
+                                      child: AnimatedOpacity(
+                                        // Only show the button when paused
+                                        opacity: _videoController!.value.isPlaying ? 0.0 : 1.0,
+                                        duration: Duration(milliseconds: 200),
+                                        child: Container(
+                                          padding: EdgeInsets.all(10.w),
+                                          decoration: BoxDecoration(
+                                            color: AppColorTheme.black.withOpacity(0.3),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 42.sp),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                /// bottom seeking line
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: _buildCustomProgressBar(),
+                                  // Container(
+                                  //   height: 40.h,
+                                  //   alignment: Alignment.bottomCenter,
+                                  //   child: VideoProgressIndicator(
+                                  //     _videoController!,
+                                  //     allowScrubbing: true,
+                                  //     padding: EdgeInsets.symmetric(vertical: 4.h),
+                                  //     colors: VideoProgressColors(
+                                  //       playedColor: AppColorTheme.primaryHover,
+                                  //       bufferedColor: Colors.white24,
+                                  //       backgroundColor: Colors.white12,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        : Center(
+                          child: CircularProgressIndicator(color: AppColorTheme.primaryHover),
+                        )
+                      : InteractiveViewer(
+                          transformationController: _transformationController,
+                          minScale: 0.5,
+                          maxScale: 4,
+                          child: Image.network(
+                            widget.imgUrl,
+                            fit: BoxFit.contain,
+                            width: double.infinity,
+                            height: double.infinity,
+                            loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                              child: CircularProgressIndicator(color: AppColorTheme.primaryHover)
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(Icons.broken_image, color: Colors.white, size: 50),
+                            );
+                          },
+                        ),
                       ),
-                    ),
                   ),
                 ),
               ),
@@ -324,3 +454,4 @@ class _ImagePreviewState extends State<ImagePreview> {
     );
   }
 }
+

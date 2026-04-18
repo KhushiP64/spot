@@ -761,12 +761,7 @@ class CommonWidgets {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.network(
-            "https://picsum.photos/seed/42/800/450",
-            height: 120,
-            width: 120,
-          ),
-          // chatMessageImageUI(thumbnailUrl, (){}),
+          chatMessageImageUI("https://picsum.photos/seed/42/800/450", (){}),
           Container(
               padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(

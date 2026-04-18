@@ -191,9 +191,8 @@ class _MessageListState extends State<MessageList> {
     }
 
     // ************** open image preview screen *******************
-    void openImagePreviewScreen(
-        String imgUrl, String imgName, messageItem) async {
-      print("preview callllll");
+    void openImagePreviewScreen(String imgUrl, String imgName, messageItem, {bool isVideo = false}) async {
+      print("preview callllll $imgUrl");
       final chatProvider = context.read<ChatProvider>();
       chatProvider.setSelectedImage(messageItem);
       final result = await Navigator.push(
@@ -203,6 +202,7 @@ class _MessageListState extends State<MessageList> {
             imgUrl: imgUrl,
             imgName: imgName,
             messageItem: messageItem,
+            isVideo: true,
           ),
         ),
       );
@@ -423,16 +423,13 @@ class _MessageListState extends State<MessageList> {
 
                     //*************************** date formatting *************************
                     final createdAt = DateTime.parse(messageItem['created_at']);
-                    final currentDate = DateTime(
-                        createdAt.year, createdAt.month, createdAt.day);
+                    final currentDate = DateTime(createdAt.year, createdAt.month, createdAt.day);
                     bool showDate = false;
                     if (index == 0) {
                       showDate = true;
                     } else {
-                      final prevCreatedAt =
-                          DateTime.parse(messages[index - 1]['created_at']);
-                      final prevDate = DateTime(prevCreatedAt.year,
-                          prevCreatedAt.month, prevCreatedAt.day);
+                      final prevCreatedAt = DateTime.parse(messages[index - 1]['created_at']);
+                      final prevDate = DateTime(prevCreatedAt.year, prevCreatedAt.month, prevCreatedAt.day);
                       if (currentDate != prevDate) {
                         showDate = true;
                       }
@@ -443,283 +440,158 @@ class _MessageListState extends State<MessageList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Date separator
-                        if (showDate)
-                          CommonWidgets.dateSeparatorUI(currentDate),
+                        if (showDate) CommonWidgets.dateSeparatorUI(currentDate),
 
                         /// Message & System Message and Message accept and decline button
-                        messageItem['vMsgData'] is Map &&
-                                messageItem['vMsgData'].isNotEmpty
-                            ? messageItem['vMsgData']['flags'] == 0
-                                ? SystemMessages(
-                                    messageItem: messageItem,
-                                    formattedTime: formattedTime,
-                                    systemMessageHighlightedText: "",
-                                  )
-                                : MsgAcceptDeclineBtn(
-                                    messageItem: messageItem,
-                                    onPressAcceptChatRequest: (item) {
-                                      onPressAcceptChatRequest(
-                                          item, messageItem);
-                                    },
+                        messageItem['vMsgData'] is Map && messageItem['vMsgData'].isNotEmpty
+                        ? messageItem['vMsgData']['flags'] == 0
+                          ? SystemMessages(messageItem: messageItem, formattedTime: formattedTime, systemMessageHighlightedText: "")
+                          : MsgAcceptDeclineBtn(
+                            messageItem: messageItem,
+                            onPressAcceptChatRequest: (item) {
+                              onPressAcceptChatRequest(item, messageItem);
+                            },
+                            formattedTime: formattedTime,
+                            sendUserName: isSender ? "You" : dataListProvider.openedChatUserData['vFullName']
+                          )
+                        : Container(
+                          margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.w),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+                            children: [
+                              /// Receiver's Profile Icon
+                              !isSender
+                              ? ProfileIconStatusDot(
+                                profilePic: dataListProvider.openedChatUserData['vProfilePic'],
+                                statusColor: AppColorTheme.transparent,
+                                statusBorderColor: AppColorTheme.transparent,
+                                showStatusColor: false,
+                                profileSize: 42,
+                              )
+                              : Container(),
+                              SizedBox(width: 10.w),
+
+                              /// Message
+                              Column(
+                                crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                children: [
+                                  messageItem['vFiles'] != ""
+                                    ? CommonFunctions.isImage(messageItem['vFiles'])
+                                      ? messageItem['isFileCon'] == 'image' &&
+                                        messageItem['vFilesThumb'] != null &&
+                                        messageItem['vFilesThumb'].toString().isNotEmpty
+                                        ? InkWell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: isSender ? 4.w : 0, left: !isSender ? 4.w : 0),
+                                            child: CommonWidgets.chatMessageImageUI(messageItem['vFilesThumb'], () {
+                                              openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
+                                            }),
+                                          ),
+                                        )
+                                        : Container(
+                                          height: 120.h,
+                                          padding: EdgeInsets.only(right: isSender ? 6.w : 0, left: !isSender ? 6.w : 0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(6),
+                                            color: Colors.grey.shade100,
+                                          ),
+                                          child: Center(
+                                            child: Icon(Icons.image_not_supported, size: 40.w, color: Colors.grey),
+                                          )
+                                        )
+                                      : messageItem['isFileCon'] == 'File' &&
+                                        !messageItem['vFiles'].toString().endsWith("gif") &&
+                                        !messageItem['vFiles'].toString().endsWith("mp3")
+                                        ? CommonWidgets.chatMessageFileUI(
+                                          messageItem: messageItem,
+                                          isSender: isSender,
+                                          bgColor: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
+                                          width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth,
+                                          fileImage: messageItem['vFilesThumb'],
+                                          fileName: messageItem['isOriginalName'],
+                                          isShowAlertIcon: messageItem['isFileExist'] != 1 && messageItem['isFileExist'] != 2,
+                                          highlightedText: "",
+                                          handleOnTapDownload: () {
+                                            CommonFunctions.downloadFileWithPermission(
+                                              messageItem['vFiles'],
+                                              messageItem['isOriginalName'],
+                                              context
+                                            );
+                                          })
+                                        : messageItem['isFileCon'] == 'video'
+                                          ? CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){
+                                            // openImagePreviewScreen("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                            openImagePreviewScreen("https://www.w3schools.com/html/mov_bbb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                            // openImagePreviewScreen("https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                          })
+                                          : messageItem['vFiles'].toString().endsWith("gif")
+                                            ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
+                                              openImagePreviewScreen(
+                                                messageItem['vFiles'],
+                                                messageItem['isOriginalName'],
+                                                messageItem
+                                              );
+                                            })
+                                            : messageItem['vFiles'].toString().endsWith("mp3")
+                                              ? AudioMessageBubble(
+                                                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                                                isSender: isSender,
+                                                audioName: messageItem['isOriginalName'],
+                                              )
+                                              // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
+                                              : Container()
+
+                                      /// Chat Message Text
+                                    : CommonWidgets.chatMessageTextUI(messageText: messageText, isSender: isSender, width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth),
+
+                                  /// Sender/Receiver name and time & Forwarded/Edited Text
+                                  MessageUserNameAndTime(
                                     formattedTime: formattedTime,
                                     sendUserName: isSender
                                         ? "You"
                                         : dataListProvider
-                                            .openedChatUserData['vFullName'])
-                            : Container(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 12.w, vertical: 8.w),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: isSender
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                                  children: [
-                                    /// Receiver's Profile Icon
-                                    !isSender
-                                        ? ProfileIconStatusDot(
-                                            profilePic: dataListProvider
+                                                .openedChatUserData
+                                                .isNotEmpty
+                                            ? dataListProvider
                                                     .openedChatUserData[
-                                                'vProfilePic'],
-                                            statusColor:
-                                                AppColorTheme.transparent,
-                                            statusBorderColor:
-                                                AppColorTheme.transparent,
-                                            showStatusColor: false,
-                                            profileSize: 42,
+                                                'vFullName']
+                                            : "",
+                                    isForwarded: int.tryParse(
+                                            messageItem['isForwardMsg']
+                                                    ?.toString() ??
+                                                '') ??
+                                        0,
+                                    isEdited: messageItem['iEdited'],
+                                    isSender: isSender,
+                                    statusIndicator: isSender
+                                        ? CircleAvatar(
+                                            radius: 3.r,
+                                            backgroundColor: messageItem[
+                                                        'iReadTo'] ==
+                                                    1
+                                                ? AppColorTheme.success
+                                                : AppColorTheme.muted,
                                           )
-                                        : Container(),
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
+                                        : null,
+                                  ),
+                                ],
+                              ),
 
-                                    /// Message
-                                    Column(
-                                      crossAxisAlignment: isSender
-                                          ? CrossAxisAlignment.end
-                                          : CrossAxisAlignment.start,
-                                      children: [
-                                        messageItem['vFiles'] != ""
-                                            ? CommonFunctions.isImage(
-                                                    messageItem['vFiles'])
-                                                ? messageItem['isFileCon'] == 'image' &&
-                                                        messageItem['vFilesThumb'] !=
-                                                            null &&
-                                                        messageItem['vFilesThumb']
-                                                            .toString()
-                                                            .isNotEmpty
-                                                    ? InkWell(
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  right:
-                                                                      isSender
-                                                                          ? 4.w
-                                                                          : 0,
-                                                                  left:
-                                                                      !isSender
-                                                                          ? 4.w
-                                                                          : 0),
-                                                          child: CommonWidgets
-                                                              .chatMessageImageUI(
-                                                                  messageItem[
-                                                                      'vFilesThumb'],
-                                                                  () {
-                                                            openImagePreviewScreen(
-                                                                messageItem[
-                                                                    'vFiles'],
-                                                                messageItem[
-                                                                    'isOriginalName'],
-                                                                messageItem);
-                                                          }),
-                                                        ),
-                                                      )
-                                                    : Container(
-                                                        height: 120,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: isSender
-                                                                    ? 6.w
-                                                                    : 0,
-                                                                left: !isSender
-                                                                    ? 6.w
-                                                                    : 0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(6),
-                                                          color: Colors
-                                                              .grey.shade100,
-                                                        ),
-                                                        child: Center(
-                                                          child: Icon(
-                                                              Icons
-                                                                  .image_not_supported,
-                                                              size: 40.w,
-                                                              color:
-                                                                  Colors.grey),
-                                                        ))
-                                                : messageItem['isFileCon'] == 'File' &&
-                                                        !messageItem['vFiles']
-                                                            .toString()
-                                                            .endsWith("gif") &&
-                                                        !messageItem['vFiles']
-                                                            .toString()
-                                                            .endsWith("mp3")
-                                                    ? CommonWidgets
-                                                        .chatMessageFileUI(
-                                                            messageItem:
-                                                                messageItem,
-                                                            isSender: isSender,
-                                                            bgColor: isSender
-                                                                ? AppColorTheme
-                                                                    .senderMsgBg
-                                                                : AppColorTheme
-                                                                    .receiverMsgBg,
-                                                            width: MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                CommonWidgets
-                                                                    .chatBubbleWidth,
-                                                            fileImage: messageItem[
-                                                                'vFilesThumb'],
-                                                            fileName: messageItem['isOriginalName'],
-                                                            isShowAlertIcon: messageItem['isFileExist'] != 1 && messageItem['isFileExist'] != 2,
-                                                            highlightedText: "",
-                                                            handleOnTapDownload: () {
-                                                              CommonFunctions.downloadFileWithPermission(
-                                                                  messageItem[
-                                                                      'vFiles'],
-                                                                  messageItem[
-                                                                      'isOriginalName'],
-                                                                  context);
-                                                            })
-                                                    : messageItem['isFileCon'] == 'video'
-                                                        ?
-                                                        // CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);})
-                                                        GestureDetector(
-                                                            onTap: () {
-                                                              openImagePreviewScreen(
-                                                                  messageItem[
-                                                                      'vFiles'],
-                                                                  messageItem[
-                                                                      'isOriginalName'],
-                                                                  messageItem);
-                                                            },
-                                                            child: Stack(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              children: [
-                                                                Image.network(
-                                                                  "https://picsum.photos/seed/42/800/450",
-                                                                  height: 120,
-                                                                  width: 120,
-                                                                ),
-                                                                // chatMessageImageUI(thumbnailUrl, (){}),
-                                                                Container(
-                                                                    padding: EdgeInsets
-                                                                        .all(6
-                                                                            .w),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(50)),
-                                                                      color: AppColorTheme
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.9),
-                                                                    ),
-                                                                    child: InkWell(
-                                                                        onTap: () {
-                                                                          openImagePreviewScreen(
-                                                                              messageItem['vFiles'],
-                                                                              messageItem['isOriginalName'],
-                                                                              messageItem);
-                                                                        },
-                                                                        child: Icon(Icons.play_arrow, size: 35.w, color: AppColorTheme.black40))),
-                                                              ],
-                                                            ),
-                                                          )
-                                                        : messageItem['vFiles'].toString().endsWith("gif")
-                                                            ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
-                                                                openImagePreviewScreen(
-                                                                    messageItem[
-                                                                        'vFiles'],
-                                                                    messageItem[
-                                                                        'isOriginalName'],
-                                                                    messageItem);
-                                                              })
-                                                            : messageItem['vFiles'].toString().endsWith("mp3")
-                                                                ? AudioMessageBubble(
-                                                                    url:
-                                                                        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-                                                                    isSender:
-                                                                        isSender,
-                                                                    audioName:
-                                                                        messageItem[
-                                                                            'isOriginalName'],
-                                                                  )
-                                                                // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
-                                                                : Container()
-
-                                            /// Chat Message Text
-                                            : CommonWidgets.chatMessageTextUI(messageText: messageText, isSender: isSender, width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth),
-
-                                        /// Sender/Receiver name and time & Forwarded/Edited Text
-                                        MessageUserNameAndTime(
-                                          formattedTime: formattedTime,
-                                          sendUserName: isSender
-                                              ? "You"
-                                              : dataListProvider
-                                                      .openedChatUserData
-                                                      .isNotEmpty
-                                                  ? dataListProvider
-                                                          .openedChatUserData[
-                                                      'vFullName']
-                                                  : "",
-                                          isForwarded: int.tryParse(
-                                                  messageItem['isForwardMsg']
-                                                          ?.toString() ??
-                                                      '') ??
-                                              0,
-                                          isEdited: messageItem['iEdited'],
-                                          isSender: isSender,
-                                          statusIndicator: isSender
-                                              ? CircleAvatar(
-                                                  radius: 3.r,
-                                                  backgroundColor: messageItem[
-                                                              'iReadTo'] ==
-                                                          1
-                                                      ? AppColorTheme.success
-                                                      : AppColorTheme.muted,
-                                                )
-                                              : null,
-                                        ),
-                                      ],
-                                    ),
-
-                                    /// Sender's Profile Icon
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    isSender
-                                        ? ProfileIconStatusDot(
-                                            profilePic:
-                                                currentUserData['vProfilePic'],
-                                            statusColor:
-                                                AppColorTheme.transparent,
-                                            statusBorderColor:
-                                                AppColorTheme.transparent,
-                                            showStatusColor: false,
-                                            profileSize: 42,
-                                          )
-                                        : Container(),
-                                  ],
-                                ),
-                              )
+                              /// Sender's Profile Icon
+                              SizedBox(width: 10.w),
+                              isSender
+                                ? ProfileIconStatusDot(
+                                  profilePic: currentUserData['vProfilePic'],
+                                  statusColor: AppColorTheme.transparent,
+                                  statusBorderColor: AppColorTheme.transparent,
+                                  showStatusColor: false,
+                                  profileSize: 42,
+                                )
+                                : Container(),
+                            ],
+                          ),
+                        )
                       ],
                     );
                     // return Column(

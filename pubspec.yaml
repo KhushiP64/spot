@@ -74,6 +74,7 @@ dependencies:
   image_cropper: ^11.0.0
   get_thumbnail_video: ^0.7.3
   audioplayers: ^6.6.0
+  video_player: ^2.10.1
 
 dev_dependencies:
   flutter_test:
