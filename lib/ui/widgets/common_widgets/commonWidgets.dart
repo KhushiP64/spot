@@ -603,23 +603,22 @@ class CommonWidgets {
 
   // ************************** chat message text ui *****************************
   static Widget chatMessageTextUI(
-      {required String messageText,
-      required bool isSender,
-      required double width,
-      String highlightedText = ""}) {
+    {required String messageText,
+    required bool isSender,
+    required double width,
+    String highlightedText = ""}) {
     return chatBubbleUI(
-        isSender: isSender,
-        width: width,
-        childWidget: ConvertDecodedTextToHtmlStyle(
-          message: messageText,
-          highlightText: highlightedText,
-        ));
+      isSender: isSender,
+      width: width,
+      childWidget: ConvertDecodedTextToHtmlStyle(
+        message: messageText,
+        highlightText: highlightedText,
+      )
+    );
   }
 
   // ************************* Image in chat **************************
-  static Widget chatMessageImageUI(
-      String imageUrl, VoidCallback handleOnTapImage) {
-    print("Image urlll $imageUrl");
+  static Widget chatMessageImageUI(String imageUrl, VoidCallback handleOnTapImage) {
     Widget imageWidget;
     imageWidget = InkWell(
       onTap: handleOnTapImage,
@@ -646,8 +645,7 @@ class CommonWidgets {
                 child: Center(
                   child: CircularProgressIndicator(
                     value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
+                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                         : null,
                   ),
                 ),
@@ -710,40 +708,34 @@ class CommonWidgets {
         padding: EdgeInsets.all(10.w),
         margin: EdgeInsets.symmetric(vertical: 4.w),
         decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.only(
-              topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
-              topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
-              bottomLeft: Radius.circular(12.w),
-              bottomRight: Radius.circular(12.w),
-            )),
+          color: bgColor,
+          borderRadius: BorderRadius.only(
+            topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
+            topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
+            bottomLeft: Radius.circular(12.w),
+            bottomRight: Radius.circular(12.w),
+          )
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.network(fileImage),
-            SizedBox(
-              width: 12.w,
-            ),
+            SizedBox(width: 12.w),
             Flexible(
-                child: ConvertDecodedTextToHtmlStyle(
-              message: fileName ?? '',
-              highlightText: highlightedText,
-            )),
+              child: ConvertDecodedTextToHtmlStyle(
+                message: fileName ?? '',
+                highlightText: highlightedText,
+              )
+            ),
+            SizedBox(width: 12.w,),
             InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(6.r)),
               onTap: handleOnTapDownload,
-              child: Padding(
-                padding: EdgeInsets.only(left: 12.w),
-                child: SvgPicture.asset(
-                  AppMedia.download,
-                  width: 20.w,
-                  height: 20.h,
-                ),
-              ),
+              child: SvgPicture.asset(AppMedia.download, width: 20.w, height: 20.h),
             ),
             if (isShowAlertIcon)
-              Icon(FeatherIcons.alertCircle,
-                  size: 20.w, color: AppColorTheme.danger),
+              Icon(FeatherIcons.alertCircle, size: 20.w, color: AppColorTheme.danger),
           ],
         ),
       ),
@@ -753,7 +745,6 @@ class CommonWidgets {
   // *********************** videos in chat *****************************
   static Widget chatMessageVideoUI(
       String thumbnailUrl, VoidCallback openFullScreenPlayer) {
-    print("function calll");
     return GestureDetector(
       onTap: () {
         openFullScreenPlayer();

@@ -109,8 +109,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   void handleOnClickForwardMsg() async {
     try {
       final currentUser = await CommonFunctions.getLoginUser();
-      final dataListProvider =
-          Provider.of<DataListProvider>(context, listen: false);
+      final dataListProvider = Provider.of<DataListProvider>(context, listen: false);
       await dataListProvider.getForwardUsers();
       if (!mounted) return;
 
@@ -184,15 +183,16 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   void handleDownloadImage() async {
-    final success = await CommonFunctions.downloadFileWithPermission(
-        widget.imgUrl, widget.imgName, context);
+    final success = await CommonFunctions.downloadFileWithPermission(widget.imgUrl, widget.imgName, context);
+    final bool isGif = widget.imgUrl.toLowerCase().endsWith('.gif');
+
     if (success) {
       toastification.show(
         context: context,
-        title: const Text('Image downloaded successfully'),
+        title: widget.isVideo ? Text('Video downloaded successfully') : isGif ? Text('Gif downloaded successfully') : Text('Image downloaded successfully'),
         type: ToastificationType.success,
         style: ToastificationStyle.flat,
-        autoCloseDuration: const Duration(seconds: 3),
+        autoCloseDuration: Duration(seconds: 3),
         alignment: Alignment.topCenter,
       );
     } else {
@@ -268,6 +268,9 @@ class _ImagePreviewState extends State<ImagePreview> {
 
   @override
   Widget build(BuildContext context) {
+
+    final bool isGif = widget.imgUrl.toLowerCase().endsWith('.gif');
+
     return WillPopScope(
       onWillPop: () async {
         final chatProvider = context.read<ChatProvider>();
@@ -313,14 +316,18 @@ class _ImagePreviewState extends State<ImagePreview> {
                   children: [
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: onPressBack,
-                          child: SvgPicture.asset(AppMedia.leftArrow),
+                        Material(
+                          color: AppColorTheme.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                            onTap: onPressBack,
+                            child: SvgPicture.asset(AppMedia.leftArrow),
+                          ),
                         ),
                         SizedBox(width: 16.w),
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.60,
+                            maxWidth: MediaQuery.of(context).size.width * 0.65,
                           ),
                           child: Text(
                             widget.imgName,
@@ -333,14 +340,22 @@ class _ImagePreviewState extends State<ImagePreview> {
                     ),
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: handleDownloadImage,
-                          child: SvgPicture.asset(AppMedia.download),
+                        Material(
+                          color: AppColorTheme.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                            onTap: handleDownloadImage,
+                            child: SvgPicture.asset(AppMedia.download),
+                          ),
                         ),
                         SizedBox(width: 16.w),
-                        GestureDetector(
-                          onTap: handleOnClickForwardMsg,
-                          child: SvgPicture.asset(AppMedia.forward),
+                        Material(
+                          color: AppColorTheme.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                            onTap: handleOnClickForwardMsg,
+                            child: SvgPicture.asset(AppMedia.forward),
+                          ),
                         ),
                       ],
                     ),
@@ -424,8 +439,10 @@ class _ImagePreviewState extends State<ImagePreview> {
                         )
                       : InteractiveViewer(
                           transformationController: _transformationController,
-                          minScale: 0.5,
-                          maxScale: 4,
+                          minScale: isGif ? 1.0 : 0.5,
+                          maxScale: isGif ? 1.0 : 4,
+                          panEnabled: !isGif,
+                          scaleEnabled: !isGif,
                           child: Image.network(
                             widget.imgUrl,
                             fit: BoxFit.contain,

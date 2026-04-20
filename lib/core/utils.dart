@@ -21,6 +21,7 @@ import 'package:spot/providers/profile_provider.dart';
 import 'package:spot/services/api_service.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
+import 'package:toastification/toastification.dart';
 
 class CommonFunctions {
   // static List<Map<String, dynamic>> cleanQuillDelta(List input) {
@@ -345,8 +346,7 @@ class CommonFunctions {
   }
 
   // ***************** download files *******************
-  static Future<bool> downloadFileWithPermission(
-      String url, String fileName, BuildContext context) async {
+  static Future<bool> downloadFileWithPermission(String url, String fileName, BuildContext context) async {
     final hasPermission = await requestStoragePermission();
     if (!hasPermission) return false;
 
@@ -368,6 +368,14 @@ class CommonFunctions {
           if (total != -1) {
             // print("Downloading: ${(received / total * 100).toStringAsFixed(0)}%");
           } else {
+            toastification.show(
+              context: context,
+              title: Text('Downloading...'),
+              type: ToastificationType.success,
+              style: ToastificationStyle.flat,
+              autoCloseDuration: Duration(seconds: 3),
+              alignment: Alignment.topCenter,
+            );
             // print("Downloading...");
           }
         },
