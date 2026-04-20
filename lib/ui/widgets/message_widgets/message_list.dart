@@ -183,16 +183,15 @@ class _MessageListState extends State<MessageList> {
         }
       }
       final removedList = CommonFunctions.removeMsgInList(
-          originalList: dataListProvider.userMessagesList,
-          updatedList: messageItem,
-          context: context);
+        originalList: dataListProvider.userMessagesList,
+        updatedList: messageItem,
+        context: context);
       // debugPrint('removedList $removedList', wrapWidth: 1024);
       dataListProvider.setUserMessageList(removedList);
     }
 
     // ************** open image preview screen *******************
     void openImagePreviewScreen(String imgUrl, String imgName, messageItem, {bool isVideo = false}) async {
-      print("preview callllll $imgUrl");
       final chatProvider = context.read<ChatProvider>();
       chatProvider.setSelectedImage(messageItem);
       final result = await Navigator.push(
@@ -202,7 +201,7 @@ class _MessageListState extends State<MessageList> {
             imgUrl: imgUrl,
             imgName: imgName,
             messageItem: messageItem,
-            isVideo: true,
+            isVideo: isVideo,
           ),
         ),
       );
@@ -319,11 +318,8 @@ class _MessageListState extends State<MessageList> {
                             .toLowerCase()
                             .endsWith('.svg')
                         : false);
-                    final bool isImageReply = (messageItem['vReplyFileName'] !=
-                            null &&
-                        messageItem['vReplyFileName'].toString().isNotEmpty);
-                    bool isMsgImage =
-                        CommonFunctions.isImage(messageItem['vFiles']);
+                    final bool isImageReply = (messageItem['vReplyFileName'] != null && messageItem['vReplyFileName'].toString().isNotEmpty);
+                    bool isMsgImage = CommonFunctions.isImage(messageItem['vFiles']);
                     var unescape = HtmlUnescape();
                     // var decoded = unescape.convert(messageText);
                     final chatProvider = context.watch<ChatProvider>();
@@ -342,8 +338,7 @@ class _MessageListState extends State<MessageList> {
                         if (messageItem['vMsgData'].isEmpty) {
                           setState(() {
                             if (selectedIndexContains) {
-                              chatProvider
-                                  .removeSelectedMsgs(messageItem['_id']);
+                              chatProvider.removeSelectedMsgs(messageItem['_id']);
                               if (chatProvider.selectedMsgs.isEmpty) {
                                 chatProvider.setIsMsgSelectionMode(false);
                                 setState(() {
@@ -359,8 +354,7 @@ class _MessageListState extends State<MessageList> {
                           final senderMsgSelectedForEdit =
                               chatProvider.selectedMsgs.isNotEmpty
                                   ? chatProvider.selectedMsgs.where((item) {
-                                      return item['iFromUserId'] !=
-                                          currentUserData['iUserId'];
+                                      return item['iFromUserId'] != currentUserData['iUserId'];
                                     }).toList()
                                   : [];
                           if (senderMsgSelectedForEdit.isEmpty &&
@@ -500,9 +494,7 @@ class _MessageListState extends State<MessageList> {
                                             child: Icon(Icons.image_not_supported, size: 40.w, color: Colors.grey),
                                           )
                                         )
-                                      : messageItem['isFileCon'] == 'File' &&
-                                        !messageItem['vFiles'].toString().endsWith("gif") &&
-                                        !messageItem['vFiles'].toString().endsWith("mp3")
+                                      : messageItem['isFileCon'] == 'File' && !messageItem['vFiles'].toString().endsWith("gif") && !messageItem['vFiles'].toString().endsWith("mp3")
                                         ? CommonWidgets.chatMessageFileUI(
                                           messageItem: messageItem,
                                           isSender: isSender,
@@ -527,11 +519,7 @@ class _MessageListState extends State<MessageList> {
                                           })
                                           : messageItem['vFiles'].toString().endsWith("gif")
                                             ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
-                                              openImagePreviewScreen(
-                                                messageItem['vFiles'],
-                                                messageItem['isOriginalName'],
-                                                messageItem
-                                              );
+                                              openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
                                             })
                                             : messageItem['vFiles'].toString().endsWith("mp3")
                                               ? AudioMessageBubble(
@@ -549,31 +537,17 @@ class _MessageListState extends State<MessageList> {
                                   MessageUserNameAndTime(
                                     formattedTime: formattedTime,
                                     sendUserName: isSender
-                                        ? "You"
-                                        : dataListProvider
-                                                .openedChatUserData
-                                                .isNotEmpty
-                                            ? dataListProvider
-                                                    .openedChatUserData[
-                                                'vFullName']
-                                            : "",
-                                    isForwarded: int.tryParse(
-                                            messageItem['isForwardMsg']
-                                                    ?.toString() ??
-                                                '') ??
-                                        0,
+                                      ? "You"
+                                      : dataListProvider.openedChatUserData.isNotEmpty ? dataListProvider.openedChatUserData['vFullName'] : "",
+                                    isForwarded: int.tryParse(messageItem['isForwardMsg'] ?.toString() ?? '') ?? 0,
                                     isEdited: messageItem['iEdited'],
                                     isSender: isSender,
                                     statusIndicator: isSender
-                                        ? CircleAvatar(
-                                            radius: 3.r,
-                                            backgroundColor: messageItem[
-                                                        'iReadTo'] ==
-                                                    1
-                                                ? AppColorTheme.success
-                                                : AppColorTheme.muted,
-                                          )
-                                        : null,
+                                    ? CircleAvatar(
+                                      radius: 3.r,
+                                      backgroundColor: messageItem['iReadTo'] == 1 ? AppColorTheme.success : AppColorTheme.muted,
+                                    )
+                                    : null,
                                   ),
                                 ],
                               ),
@@ -581,14 +555,14 @@ class _MessageListState extends State<MessageList> {
                               /// Sender's Profile Icon
                               SizedBox(width: 10.w),
                               isSender
-                                ? ProfileIconStatusDot(
-                                  profilePic: currentUserData['vProfilePic'],
-                                  statusColor: AppColorTheme.transparent,
-                                  statusBorderColor: AppColorTheme.transparent,
-                                  showStatusColor: false,
-                                  profileSize: 42,
-                                )
-                                : Container(),
+                              ? ProfileIconStatusDot(
+                                profilePic: currentUserData['vProfilePic'],
+                                statusColor: AppColorTheme.transparent,
+                                statusBorderColor: AppColorTheme.transparent,
+                                showStatusColor: false,
+                                profileSize: 42,
+                              )
+                              : Container(),
                             ],
                           ),
                         )
