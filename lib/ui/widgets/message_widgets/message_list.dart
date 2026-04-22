@@ -284,11 +284,9 @@ class _MessageListState extends State<MessageList> {
               //     }
               //   });
               // }
-              if (!chatProvider.msgSelectionMode &&
-                  chatProvider.shouldScrollToBottom) {
+              if (!chatProvider.msgSelectionMode && chatProvider.shouldScrollToBottom) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (messages.isNotEmpty &&
-                      widget.scrollController.hasClients) {
+                  if (messages.isNotEmpty && widget.scrollController.hasClients) {
                     widget.scrollController.animateTo(
                       widget.scrollController.position.maxScrollExtent,
                       duration: const Duration(milliseconds: 300),
@@ -304,36 +302,29 @@ class _MessageListState extends State<MessageList> {
                   itemBuilder: (context, index) {
                     final messageItem = messages[index];
                     // log("messageItem $messageItem");
-                    final isSender = messageItem['iFromUserId'] ==
-                        currentUserData['iUserId'];
+                    final isSender = messageItem['iFromUserId'] == currentUserData['iUserId'];
                     final messageText = messageItem['message'] ?? 'No message';
-                    DateTime dateTime =
-                        DateTime.parse(messageItem['created_at']);
-                    String formattedTime =
-                        DateFormat('h:mm a').format(dateTime);
-                    bool isReplyMsgSvg = (messageItem['vReplyMsgData'] is Map &&
-                            messageItem['vReplyMsgData'].isNotEmpty &&
-                            messageItem['vReplyMsgData']['vReplyFilePath'] != ""
-                        ? messageItem['vReplyMsgData']['vReplyFilePath']!
-                            .toLowerCase()
-                            .endsWith('.svg')
-                        : false);
+                    DateTime dateTime = DateTime.parse(messageItem['created_at']);
+                    String formattedTime = DateFormat('h:mm a').format(dateTime);
+                    bool isReplyMsgSvg = (messageItem['vReplyMsgData'] is Map && messageItem['vReplyMsgData'].isNotEmpty && messageItem['vReplyMsgData']['vReplyFilePath'] != ""
+                      ? messageItem['vReplyMsgData']['vReplyFilePath']!.toLowerCase().endsWith('.svg')
+                      : false);
                     final bool isImageReply = (messageItem['vReplyFileName'] != null && messageItem['vReplyFileName'].toString().isNotEmpty);
                     bool isMsgImage = CommonFunctions.isImage(messageItem['vFiles']);
                     var unescape = HtmlUnescape();
                     // var decoded = unescape.convert(messageText);
                     final chatProvider = context.watch<ChatProvider>();
-                    final List<dynamic> selectedmsgs =
-                        chatProvider.selectedMsgs.isNotEmpty
-                            ? chatProvider.selectedMsgs.where((item) {
-                                return item['_id'] == messageItem['_id'];
-                              }).toList()
-                            : [];
+                    final List<dynamic> selectedmsgs = chatProvider.selectedMsgs.isNotEmpty
+                      ? chatProvider.selectedMsgs.where((item) {
+                          return item['_id'] == messageItem['_id'];
+                        }).toList()
+                      : [];
                     final selectedIndexContains = selectedmsgs.isNotEmpty &&
                         selectedmsgs[0]['_id'] == messageItem['_id'];
 
                     // ******************** handle on Long press message ********************
                     void checkIconsConditions() {
+                      print("second fuinction calling");
                       if (chatProvider.msgSelectionMode) {
                         if (messageItem['vMsgData'].isEmpty) {
                           setState(() {
@@ -351,28 +342,23 @@ class _MessageListState extends State<MessageList> {
                           });
 
                           // *********** edit msg icon conditions ***********
-                          final senderMsgSelectedForEdit =
-                              chatProvider.selectedMsgs.isNotEmpty
-                                  ? chatProvider.selectedMsgs.where((item) {
-                                      return item['iFromUserId'] != currentUserData['iUserId'];
-                                    }).toList()
-                                  : [];
-                          if (senderMsgSelectedForEdit.isEmpty &&
-                              chatProvider.selectedMsgs.length == 1 &&
-                              chatProvider.selectedMsgs.first['vFiles'] == "") {
+                          final senderMsgSelectedForEdit = chatProvider.selectedMsgs.isNotEmpty
+                            ? chatProvider.selectedMsgs.where((item) {
+                                return item['iFromUserId'] != currentUserData['iUserId'];
+                              }).toList()
+                            : [];
+                          if (senderMsgSelectedForEdit.isEmpty && chatProvider.selectedMsgs.length == 1 && chatProvider.selectedMsgs.first['vFiles'] == "") {
                             chatProvider.setShowEditIcon(true);
                           } else {
                             chatProvider.setShowEditIcon(false);
                           }
 
                           // *********** delete msg icon conditions ***********
-                          final senderMsgSelectedForDelete =
-                              chatProvider.selectedMsgs.isNotEmpty
-                                  ? chatProvider.selectedMsgs.where((item) {
-                                      return item['iFromUserId'] !=
-                                          currentUserData['iUserId'];
-                                    }).toList()
-                                  : [];
+                          final senderMsgSelectedForDelete = chatProvider.selectedMsgs.isNotEmpty
+                              ? chatProvider.selectedMsgs.where((item) {
+                                  return item['iFromUserId'] != currentUserData['iUserId'];
+                                }).toList()
+                              : [];
                           if (senderMsgSelectedForDelete.isEmpty) {
                             chatProvider.setShowDeleteIcon(true);
                           } else {
@@ -380,12 +366,9 @@ class _MessageListState extends State<MessageList> {
                           }
 
                           // *********** download msg icon conditions ***********
-                          final senderMsgSelectedForDownload =
-                              chatProvider.selectedMsgs.isNotEmpty
-                                  ? chatProvider.selectedMsgs.where((item) {
-                                      return item['vFiles'] == "";
-                                    }).toList()
-                                  : [];
+                          final senderMsgSelectedForDownload = chatProvider.selectedMsgs.isNotEmpty
+                            ? chatProvider.selectedMsgs.where((item) {return item['vFiles'] == "";}).toList()
+                            : [];
                           if (senderMsgSelectedForDownload.isEmpty) {
                             chatProvider.setShowDownloadIcon(true);
                           } else {
@@ -404,9 +387,8 @@ class _MessageListState extends State<MessageList> {
 
                     void handleOnLongPressMessage() {
                       final chatProvider = context.read<ChatProvider>();
-                      if (messageItem['vMsgData'].isEmpty &&
-                          !chatProvider.isUserReplying &&
-                          !chatProvider.isUserEditing) {
+                      if (messageItem['vMsgData'].isEmpty && !chatProvider.isUserReplying && !chatProvider.isUserEditing) {
+                      print("function callling");
                         chatProvider.setIsMsgSelectionMode(true);
                         checkIconsConditions();
                         setState(() {
@@ -429,144 +411,169 @@ class _MessageListState extends State<MessageList> {
                       }
                     }
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Date separator
-                        if (showDate) CommonWidgets.dateSeparatorUI(currentDate),
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onLongPress: handleOnLongPressMessage,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// Date separator
+                          if (showDate) CommonWidgets.dateSeparatorUI(currentDate),
 
-                        /// Message & System Message and Message accept and decline button
-                        messageItem['vMsgData'] is Map && messageItem['vMsgData'].isNotEmpty
-                        ? messageItem['vMsgData']['flags'] == 0
-                          ? SystemMessages(messageItem: messageItem, formattedTime: formattedTime, systemMessageHighlightedText: "")
-                          : MsgAcceptDeclineBtn(
-                            messageItem: messageItem,
-                            onPressAcceptChatRequest: (item) {
-                              onPressAcceptChatRequest(item, messageItem);
-                            },
-                            formattedTime: formattedTime,
-                            sendUserName: isSender ? "You" : dataListProvider.openedChatUserData['vFullName']
-                          )
-                        : Container(
-                          margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.w),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-                            children: [
-                              /// Receiver's Profile Icon
-                              !isSender
-                              ? ProfileIconStatusDot(
-                                profilePic: dataListProvider.openedChatUserData['vProfilePic'],
-                                statusColor: AppColorTheme.transparent,
-                                statusBorderColor: AppColorTheme.transparent,
-                                showStatusColor: false,
-                                profileSize: 42,
-                              )
-                              : Container(),
-                              SizedBox(width: 10.w),
-
-                              /// Message
-                              Column(
-                                crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                          /// Message & System Message and Message accept and decline button
+                          messageItem['vMsgData'] is Map && messageItem['vMsgData'].isNotEmpty
+                          ? messageItem['vMsgData']['flags'] == 0
+                            ? SystemMessages(messageItem: messageItem, formattedTime: formattedTime, systemMessageHighlightedText: "")
+                            : MsgAcceptDeclineBtn(
+                              messageItem: messageItem,
+                              onPressAcceptChatRequest: (item) {
+                                onPressAcceptChatRequest(item, messageItem);
+                              },
+                              formattedTime: formattedTime,
+                              sendUserName: isSender ? "You" : dataListProvider.openedChatUserData['vFullName']
+                            )
+                          : GestureDetector(
+                            onLongPress: handleOnLongPressMessage,
+                            onTap: checkIconsConditions,
+                            child: Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: selectedIndexContains && !chatProvider.isUserReplying && !chatProvider.isUserEditing ? AppColorTheme.receiverMsgBg : AppColorTheme.white,
+                                borderRadius: BorderRadius.all(Radius.circular(8.r))
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  messageItem['vFiles'] != ""
-                                    ? CommonFunctions.isImage(messageItem['vFiles'])
-                                      ? messageItem['isFileCon'] == 'image' &&
-                                        messageItem['vFilesThumb'] != null &&
-                                        messageItem['vFilesThumb'].toString().isNotEmpty
-                                        ? InkWell(
-                                          child: Padding(
-                                            padding: EdgeInsets.only(right: isSender ? 4.w : 0, left: !isSender ? 4.w : 0),
-                                            child: CommonWidgets.chatMessageImageUI(messageItem['vFilesThumb'], () {
-                                              openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
-                                            }),
-                                          ),
+                                  /// selected message icons
+                                  if (chatProvider.msgSelectionMode)
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 12.w, top: 10.h),
+                                      child: (chatProvider.isUserEditing || chatProvider.isUserReplying) || messageItem['vMsgData'].isEmpty
+                                        ? SvgPicture.asset(selectedIndexContains ? AppMedia.selectedMsgCheck : AppMedia.unselectedMsg, width: 17.w,)
+                                        : SizedBox(width: 25.w, height: 25.h)
+                                    ),
+                                  
+                                  Expanded(
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                      children: [
+                                        /// Receiver's Profile Icon
+                                        !isSender
+                                        ? ProfileIconStatusDot(
+                                          profilePic: dataListProvider.openedChatUserData['vProfilePic'],
+                                          statusColor: AppColorTheme.transparent,
+                                          statusBorderColor: AppColorTheme.transparent,
+                                          showStatusColor: false,
+                                          profileSize: 42,
                                         )
-                                        : Container(
-                                          height: 120.h,
-                                          padding: EdgeInsets.only(right: isSender ? 6.w : 0, left: !isSender ? 6.w : 0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(6),
-                                            color: Colors.grey.shade100,
-                                          ),
-                                          child: Center(
-                                            child: Icon(Icons.image_not_supported, size: 40.w, color: Colors.grey),
-                                          )
-                                        )
-                                      : messageItem['isFileCon'] == 'File' && !messageItem['vFiles'].toString().endsWith("gif") && !messageItem['vFiles'].toString().endsWith("mp3")
-                                        ? CommonWidgets.chatMessageFileUI(
-                                          messageItem: messageItem,
-                                          isSender: isSender,
-                                          bgColor: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
-                                          width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth,
-                                          fileImage: messageItem['vFilesThumb'],
-                                          fileName: messageItem['isOriginalName'],
-                                          isShowAlertIcon: messageItem['isFileExist'] != 1 && messageItem['isFileExist'] != 2,
-                                          highlightedText: "",
-                                          handleOnTapDownload: () {
-                                            CommonFunctions.downloadFileWithPermission(
-                                              messageItem['vFiles'],
-                                              messageItem['isOriginalName'],
-                                              context
-                                            );
-                                          })
-                                        : messageItem['isFileCon'] == 'video'
-                                          ? CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){
-                                            // openImagePreviewScreen("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
-                                            openImagePreviewScreen("https://www.w3schools.com/html/mov_bbb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
-                                            // openImagePreviewScreen("https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
-                                          })
-                                          : messageItem['vFiles'].toString().endsWith("gif")
-                                            ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
-                                              openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
-                                            })
-                                            : messageItem['vFiles'].toString().endsWith("mp3")
-                                              ? AudioMessageBubble(
-                                                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-                                                isSender: isSender,
-                                                audioName: messageItem['isOriginalName'],
+                                        : Container(),
+                                        SizedBox(width: 10.w),
+                                    
+                                        /// Message
+                                        Column(
+                                          crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                          children: [
+                                            messageItem['vFiles'] != ""
+                                              ? CommonFunctions.isImage(messageItem['vFiles'])
+                                                ? messageItem['isFileCon'] == 'image' &&
+                                                  messageItem['vFilesThumb'] != null &&
+                                                  messageItem['vFilesThumb'].toString().isNotEmpty
+                                                  ? InkWell(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(right: isSender ? 4.w : 0, left: !isSender ? 4.w : 0),
+                                                      child: CommonWidgets.chatMessageImageUI(messageItem['vFilesThumb'], () {
+                                                        openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
+                                                      }),
+                                                    ),
+                                                  )
+                                                  : Container(
+                                                    height: 120.h,
+                                                    padding: EdgeInsets.only(right: isSender ? 6.w : 0, left: !isSender ? 6.w : 0),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey.shade100,
+                                                      borderRadius: BorderRadius.circular(6)
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(Icons.image_not_supported, size: 40.w, color: Colors.grey),
+                                                    )
+                                                  )
+                                                : messageItem['isFileCon'] == 'File' && !messageItem['vFiles'].toString().endsWith("gif") && !messageItem['vFiles'].toString().endsWith("mp3")
+                                                  ? CommonWidgets.chatMessageFileUI(
+                                                    messageItem: messageItem,
+                                                    isSender: isSender,
+                                                    bgColor: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
+                                                    width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth,
+                                                    fileImage: messageItem['vFilesThumb'],
+                                                    fileName: messageItem['isOriginalName'],
+                                                    isShowAlertIcon: messageItem['isFileExist'] != 1 && messageItem['isFileExist'] != 2,
+                                                    highlightedText: "",
+                                                    handleOnTapDownload: () {
+                                                      CommonFunctions.downloadFileWithPermission(messageItem['vFiles'], messageItem['isOriginalName'], context);
+                                                    })
+                                                  : messageItem['isFileCon'] == 'video'
+                                                    ? CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){
+                                                      // openImagePreviewScreen("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                                      openImagePreviewScreen("https://www.w3schools.com/html/mov_bbb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                                    })
+                                                    : messageItem['vFiles'].toString().endsWith("gif")
+                                                      ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
+                                                        openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
+                                                      })
+                                                      : messageItem['vFiles'].toString().endsWith("mp3")
+                                                        ? AudioMessageBubble(
+                                                          url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                                                          isSender: isSender,
+                                                          audioName: messageItem['isOriginalName'],
+                                                        )
+                                                        // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
+                                                        : Container()
+                                    
+                                                /// Chat Message Text
+                                              : CommonWidgets.chatMessageTextUI(messageText: messageText, isSender: isSender, width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth),
+                                    
+                                            /// Sender/Receiver name and time & Forwarded/Edited Text
+                                            MessageUserNameAndTime(
+                                              formattedTime: formattedTime,
+                                              sendUserName: isSender
+                                                ? "You"
+                                                : dataListProvider.openedChatUserData.isNotEmpty ? dataListProvider.openedChatUserData['vFullName'] : "",
+                                              isForwarded: int.tryParse(messageItem['isForwardMsg'] ?.toString() ?? '') ?? 0,
+                                              isEdited: messageItem['iEdited'],
+                                              isSender: isSender,
+                                              statusIndicator: isSender
+                                              ? CircleAvatar(
+                                                radius: 3.r,
+                                                backgroundColor: messageItem['iReadTo'] == 1 ? AppColorTheme.success : AppColorTheme.muted,
                                               )
-                                              // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
-                                              : Container()
-
-                                      /// Chat Message Text
-                                    : CommonWidgets.chatMessageTextUI(messageText: messageText, isSender: isSender, width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth),
-
-                                  /// Sender/Receiver name and time & Forwarded/Edited Text
-                                  MessageUserNameAndTime(
-                                    formattedTime: formattedTime,
-                                    sendUserName: isSender
-                                      ? "You"
-                                      : dataListProvider.openedChatUserData.isNotEmpty ? dataListProvider.openedChatUserData['vFullName'] : "",
-                                    isForwarded: int.tryParse(messageItem['isForwardMsg'] ?.toString() ?? '') ?? 0,
-                                    isEdited: messageItem['iEdited'],
-                                    isSender: isSender,
-                                    statusIndicator: isSender
-                                    ? CircleAvatar(
-                                      radius: 3.r,
-                                      backgroundColor: messageItem['iReadTo'] == 1 ? AppColorTheme.success : AppColorTheme.muted,
-                                    )
-                                    : null,
+                                              : null,
+                                            ),
+                                          ],
+                                        ),
+                                    
+                                      /// Sender's Profile Icon
+                                      SizedBox(width: 10.w),
+                                      isSender
+                                      ? ProfileIconStatusDot(
+                                        profilePic: currentUserData['vProfilePic'],
+                                        statusColor: AppColorTheme.transparent,
+                                        statusBorderColor: AppColorTheme.transparent,
+                                        showStatusColor: false,
+                                        profileSize: 42,
+                                      )
+                                      : Container(),
+                                    ],
+                                                                    ),
                                   ),
                                 ],
                               ),
-
-                              /// Sender's Profile Icon
-                              SizedBox(width: 10.w),
-                              isSender
-                              ? ProfileIconStatusDot(
-                                profilePic: currentUserData['vProfilePic'],
-                                statusColor: AppColorTheme.transparent,
-                                statusBorderColor: AppColorTheme.transparent,
-                                showStatusColor: false,
-                                profileSize: 42,
-                              )
-                              : Container(),
-                            ],
-                          ),
-                        )
-                      ],
+                            ),
+                          )
+                        ],
+                      ),
                     );
                     // return Column(
                     //     crossAxisAlignment: CrossAxisAlignment.start,

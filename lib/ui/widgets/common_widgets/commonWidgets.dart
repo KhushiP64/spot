@@ -587,15 +587,14 @@ class CommonWidgets {
         padding: EdgeInsets.all(10.w),
         margin: EdgeInsets.symmetric(vertical: 4.w),
         decoration: BoxDecoration(
-            color: isSender
-                ? AppColorTheme.senderMsgBg
-                : AppColorTheme.receiverMsgBg,
-            borderRadius: BorderRadius.only(
-              topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
-              topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
-              bottomLeft: Radius.circular(12.w),
-              bottomRight: Radius.circular(12.w),
-            )),
+          color: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
+          borderRadius: BorderRadius.only(
+            topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
+            topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
+            bottomLeft: Radius.circular(12.w),
+            bottomRight: Radius.circular(12.w),
+          )
+        ),
         child: childWidget,
       ),
     );
@@ -895,6 +894,19 @@ class CommonWidgets {
     );
   }
 
+  // ******************** selected message header icon ui *************************
+  static Widget selectedMsgHeaderIcon({required String iconName, GestureTapCallback? onIconTap}) {
+    return InkWell(
+      onTap: onIconTap,
+      borderRadius: BorderRadius.all(Radius.circular(6.r)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: SvgPicture.asset(iconName),
+      ),
+    );
+  }
+
+
   static Positioned editPictureIconPosition(VoidCallback onPressEditIcon) {
     return Positioned(
         right: 5.w,
@@ -936,17 +948,6 @@ class CommonWidgets {
     return isSvg
         ? SvgPicture.network(vImage, fit: BoxFit.contain, height: 42, width: 42)
         : Image.network(vImage, fit: BoxFit.contain, height: 42, width: 42);
-  }
-
-  static Widget selectedMsgHeaderIcon(
-      {IconData? iconName, GestureTapCallback? onIconTap}) {
-    return InkWell(
-      onTap: onIconTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Icon(iconName, color: AppColorTheme.muted, size: 20),
-      ),
-    );
   }
 }
 

@@ -26,6 +26,7 @@ class ChatListItem extends StatefulWidget {
   final double borderRadius;
   final double verticalPadding;
   final double profileIconMarginTop;
+  final double profileSize;
   final VoidCallback? handleOnPressClose;
   final VoidCallback? handleOnPressUserCheck;
   final VoidCallback handleOnPressItem;
@@ -50,6 +51,7 @@ class ChatListItem extends StatefulWidget {
     this.borderRadius = 50,
     this.verticalPadding = 8,
     this.profileIconMarginTop = 0,
+    this.profileSize = 45,
     this.handleOnPressClose,
     this.handleOnPressUserCheck,
     required this.handleOnPressItem,
@@ -71,22 +73,18 @@ class _ChatListItemState extends State<ChatListItem> {
         borderRadius: BorderRadius.all(Radius.circular(6.r)),
         highlightColor: AppColorTheme.listHover,
         child: Container(
-          padding: EdgeInsets.only(
-              top: widget.verticalPadding.h,
-              bottom: widget.verticalPadding.h,
-              left: 8.h,
-              right: 18.w),
+          padding: EdgeInsets.only(top: widget.verticalPadding.h, bottom: widget.verticalPadding.h, left: 8.h, right: 18.w),
           decoration: widget.showActiveBackground
               ? BoxDecoration(
-                  color: AppColorTheme.white,
-                  borderRadius: BorderRadius.all(Radius.circular(6.r)),
-                  boxShadow: [
-                      BoxShadow(
-                          offset: Offset(0, 1),
-                          blurRadius: 1,
-                          spreadRadius: 0,
-                          color: Color.fromRGBO(10, 41, 55, 0.16))
-                    ])
+                color: AppColorTheme.white,
+                borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0, 1),
+                    blurRadius: 1,
+                    spreadRadius: 0,
+                    color: Color.fromRGBO(10, 41, 55, 0.16))
+                ])
               : BoxDecoration(),
           child: Row(
             children: [
@@ -94,12 +92,11 @@ class _ChatListItemState extends State<ChatListItem> {
               ProfileIconStatusDot(
                 marginTop: widget.profileIconMarginTop,
                 profilePic: widget.vProfilePic,
+                profileSize: widget.profileSize,
                 statusColor: widget.statusColor,
                 showStatusColor: widget.showStatusColor,
                 borderRadius: widget.borderRadius,
-                statusBorderColor: widget.showStatusColor == true
-                    ? widget.statusBorderColor
-                    : AppColorTheme.transparent,
+                statusBorderColor: widget.showStatusColor == true ? widget.statusBorderColor : AppColorTheme.transparent,
               ),
 
               SizedBox(

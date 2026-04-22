@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:spot/core/media.dart';
 import 'package:spot/core/themes.dart';
 import 'package:spot/providers/chat_provider.dart';
 import 'package:spot/providers/data_list_provider.dart';
@@ -248,7 +249,7 @@ class _SelectGroupMsgHeaderState extends State<SelectGroupMsgHeader> {
           Row(
             children: [
               CommonWidgets.selectedMsgHeaderIcon(
-                  iconName: FeatherIcons.chevronLeft,
+                  iconName: AppMedia.leftArrow,
                   onIconTap: handleOnClickBackSelectedGroupMsg),
               Text(
                 "${chatProvider.selectedGroupMsgs.length} Selected",
@@ -261,24 +262,24 @@ class _SelectGroupMsgHeaderState extends State<SelectGroupMsgHeader> {
             children: [
               if (chatProvider.isShowReplyGroupIcon)
                 CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.cornerUpLeft,
+                    iconName: AppMedia.reply,
                     onIconTap: handleOnClickReplyMsg),
               if (chatProvider.isShowEditGroupIcon)
                 CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.edit3,
+                    iconName: AppMedia.edit,
                     onIconTap: handleOnClickEditMsg),
               CommonWidgets.selectedMsgHeaderIcon(
-                  iconName: FeatherIcons.cornerUpRight,
+                  iconName: AppMedia.forward,
                   onIconTap: () {
                     handleOnClickForwardMsg(context);
                   }),
               if (chatProvider.isShowDownloadGroupIcon)
                 CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.download,
+                    iconName: AppMedia.download,
                     onIconTap: handleOnClickDownloadMsg),
               if (chatProvider.isShowDeleteGroupIcon)
                 CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.trash2,
+                    iconName: AppMedia.delete,
                     onIconTap: handleOnClickDeleteMsg),
             ],
           )
