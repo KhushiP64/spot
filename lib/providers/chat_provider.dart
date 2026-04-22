@@ -20,11 +20,13 @@ class ChatProvider extends ChangeNotifier {
   bool _isShowDeleteIcon = false;
   bool _isShowDownloadIcon = false;
   bool _isShowReplyIcon = false;
+  bool _isShowPinMsgIcon = false;
 
   bool _isShowEditGroupIcon = false;
   bool _isShowDeleteGroupIcon = false;
   bool _isShowDownloadGroupIcon = false;
   bool _isShowReplyGroupIcon = false;
+  bool _isShowPinGroupMsgIcon = false;
 
   bool shouldScrollToBottom = true;
 
@@ -61,14 +63,16 @@ class ChatProvider extends ChangeNotifier {
 
   bool get isShowEditIcon => _isShowEditIcon;
   bool get isShowDeleteIcon => _isShowDeleteIcon;
-
   bool get isShowDownloadIcon => _isShowDownloadIcon;
   bool get isShowReplyIcon => _isShowReplyIcon;
+  bool get isShowPinMsgIcon => _isShowPinMsgIcon;
 
   bool get isShowEditGroupIcon => _isShowEditGroupIcon;
   bool get isShowDeleteGroupIcon => _isShowDeleteGroupIcon;
   bool get isShowDownloadGroupIcon => _isShowDownloadGroupIcon;
   bool get isShowReplyGroupIcon => _isShowReplyGroupIcon;
+  bool get isShowPinGroupMsgIcon => _isShowPinGroupMsgIcon;
+
   Map<String, dynamic> get groupMessages => _groupMessages;
 
   bool get isEmojiOptionList => _isEmojiOptionList;
@@ -505,6 +509,11 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setShowPinMsgIcon(bool value) {
+    _isShowPinMsgIcon = value;
+    notifyListeners();
+  }
+
   // ******************* handle show/hide header selection group chat msg icons ********************
 
   void setShowEditGroupIcon(bool value) {
@@ -524,6 +533,11 @@ class ChatProvider extends ChangeNotifier {
 
   void setShowReplyGroupIcon(bool value) {
     _isShowReplyGroupIcon = value;
+    notifyListeners();
+  }
+
+  void setShowPinGroupMsgIcon(bool value) {
+    _isShowPinGroupMsgIcon = value;
     notifyListeners();
   }
 

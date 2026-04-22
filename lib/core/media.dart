@@ -52,6 +52,10 @@ class AppMedia {
   static const pinChatFill = '$_baseSvgs/pinchatfill.svg';
   static const download = '$_baseSvgs/download.svg';
   static const reply = '$_baseSvgs/reply.svg';
+  static const selectedMsgCheck = '$_baseSvgs/selectedmsgcheck.svg';
+  static const unselectedMsg = '$_baseSvgs/unselectedmsg.svg';
+  static const selectedHeaderBack = '$_baseSvgs/selectedheaderback.svg';
+  static const msgEdit = '$_baseSvgs/msgedit.svg';
 
   static const lock = '$_baseIcon/lock.svg';
   static const eye = '$_baseIcon/eye.png';

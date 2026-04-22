@@ -56,7 +56,6 @@ class _ChatListState extends State<ChatList>
     super.initState();
     FcmNotificationHelper.instance.initFcm();
     connectSocket();
-    print("hello from office windows pc");
     final chatProvider = context.read<ChatProvider>();
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {

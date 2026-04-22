@@ -10,6 +10,7 @@ import 'package:spot/providers/data_list_provider.dart';
 import 'package:spot/ui/widgets/common_widgets/commonWidgets.dart';
 import 'package:spot/ui/widgets/message_widgets/chat_message_header.dart';
 import 'package:spot/ui/widgets/message_widgets/message_list.dart';
+import 'package:spot/ui/widgets/message_widgets/select_msg_header.dart';
 import 'package:spot/ui/widgets/message_widgets/user_chat_message_box.dart';
 import 'package:spot/ui/widgets/message_widgets/user_message_search_header.dart';
 
@@ -163,37 +164,30 @@ class _UserChatState extends State<UserChat> {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return WillPopScope(
       onWillPop: _handleBackNavigation,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColorTheme.white,
         body: SafeArea(
-          child:
-              Consumer<ChatProvider>(builder: (context, chatProvider, child) {
+          child: Consumer<ChatProvider>(builder: (context, chatProvider, child) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 chatProvider.isSearching
-                    ? UserMessageSearchHeader(
-                        searchMessage: chatProvider.searchController,
-                        scrollController: _scrollController,
-                      )
-                    : ChatMessageHeader(
-                        currentUser: args['currentUser'],
-                        subTitle: "chat",
-                      ),
+                    ? UserMessageSearchHeader(searchMessage: chatProvider.searchController, scrollController: _scrollController,)
+                    : chatProvider.msgSelectionMode
+                    ? SelectMsgHeader()
+                    : ChatMessageHeader(currentUser: args['currentUser'], subTitle: "chat",),
                 CommonWidgets.divider(paddingHorizontal: 0, paddingTop: 0),
 
                 /// Chats
                 Consumer<DataListProvider>(
                     builder: (context, dataListProvider, child) {
                   return Expanded(
-                      child: MessageList(
-                    scrollController: _scrollController,
-                  ));
+                    child: MessageList(scrollController: _scrollController)
+                  );
                 }),
 
                 /// typing.... flag
@@ -217,16 +211,12 @@ class _UserChatState extends State<UserChat> {
                   builder: (context, dataListProvider, child) {
                     final userData = dataListProvider.openedChatUserData;
 
-                    final showUserInput = userData.containsKey('isStartChat') &&
-                        userData['isStartChat'] == 1 &&
-                        userData['eStatus'] != 'n';
+                    final showUserInput = userData.containsKey('isStartChat') && userData['isStartChat'] == 1 && userData['eStatus'] != 'n';
 
                     if (showUserInput) {
                       return Padding(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: UserChatMessageBox(
-                            sendMessageText: sendMessageText, type: "chat"),
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: UserChatMessageBox(sendMessageText: sendMessageText, type: "chat"),
                       );
                     } else {
                       return Container();

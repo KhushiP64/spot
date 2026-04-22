@@ -19,14 +19,13 @@ class UserMessageSearchHeader extends StatefulWidget {
     super.key,
     required this.searchMessage,
     required this.scrollController,
-    this.topPadding = 23,
+    this.topPadding = 14,
     this.onResults,
     this.focusNode,
   });
 
   @override
-  State<UserMessageSearchHeader> createState() =>
-      _UserMessageSearchHeaderState();
+  State<UserMessageSearchHeader> createState() => _UserMessageSearchHeaderState();
 }
 
 class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
@@ -51,16 +50,13 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
 
     if (query.isNotEmpty) {
       for (int i = 0; i < messages.length; i++) {
-        if (messages[i]["message"]
-            .toLowerCase()
-            .contains(query.toLowerCase())) {
+        if (messages[i]["message"].toLowerCase().contains(query.toLowerCase())) {
           // print("messagesssss in loopp ${messages[i]["message"]}");
           chatProvider.matchedIndexes.add(i);
         }
       }
     }
-    chatProvider.currentMatchIndex =
-        chatProvider.matchedIndexes.isNotEmpty ? 0 : -1;
+    chatProvider.currentMatchIndex = chatProvider.matchedIndexes.isNotEmpty ? 0 : -1;
   }
 
   void _scrollToMessage(int index) {
@@ -74,10 +70,8 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
   void _nextMatch() {
     final chatProvider = context.read<ChatProvider>();
     if (chatProvider.matchedIndexes.isNotEmpty) {
-      chatProvider.currentMatchIndex = (chatProvider.currentMatchIndex + 1) %
-          chatProvider.matchedIndexes.length;
-      _scrollToMessage(
-          chatProvider.matchedIndexes[chatProvider.currentMatchIndex]);
+      chatProvider.currentMatchIndex = (chatProvider.currentMatchIndex + 1) % chatProvider.matchedIndexes.length;
+      _scrollToMessage(chatProvider.matchedIndexes[chatProvider.currentMatchIndex]);
       upArrowClicked = false;
       downArrowClicked = true;
       setState(() {});
@@ -87,12 +81,8 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
   void _prevMatch() {
     final chatProvider = context.read<ChatProvider>();
     if (chatProvider.matchedIndexes.isNotEmpty) {
-      chatProvider.currentMatchIndex = (chatProvider.currentMatchIndex -
-              1 +
-              chatProvider.matchedIndexes.length) %
-          chatProvider.matchedIndexes.length;
-      _scrollToMessage(
-          chatProvider.matchedIndexes[chatProvider.currentMatchIndex]);
+      chatProvider.currentMatchIndex = (chatProvider.currentMatchIndex - 1 + chatProvider.matchedIndexes.length) % chatProvider.matchedIndexes.length;
+      _scrollToMessage(chatProvider.matchedIndexes[chatProvider.currentMatchIndex]);
       downArrowClicked = false;
       upArrowClicked = true;
       setState(() {});
@@ -103,8 +93,7 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
   Widget build(BuildContext context) {
     return Consumer<ChatProvider>(builder: (context, chatProvider, child) {
       return Container(
-        margin: EdgeInsets.only(
-            left: 12.w, right: 12.w, bottom: 12.h, top: widget.topPadding.h),
+        margin: EdgeInsets.only(left: 12.w, right: 12.w, bottom: 12.h, top: widget.topPadding.h),
         child: Row(
           children: [
             /// search bar
@@ -113,9 +102,7 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                 decoration: BoxDecoration(
                   color: Color.fromRGBO(10, 41, 55, 0.03),
                   borderRadius: BorderRadius.all(Radius.circular(55.r)),
-                  border: Border(
-                      top: BorderSide(
-                          color: Color.fromRGBO(10, 41, 55, 0.15), width: 1)),
+                  border: Border(top: BorderSide(color: Color.fromRGBO(10, 41, 55, 0.15), width: 1)),
                   boxShadow: [
                     // BoxShadow(color: Color.fromRGBO(10, 41, 55, 0.12),),
                     BoxShadow(
@@ -131,8 +118,7 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                     /// search input
                     Expanded(
                       child: TextField(
-                        style: AppFontStyles.dmSansRegular.copyWith(
-                            color: AppColorTheme.dark66, fontSize: 14.sp),
+                        style: AppFontStyles.dmSansRegular.copyWith(color: AppColorTheme.dark66, fontSize: 14.sp),
                         controller: chatProvider.searchController,
                         cursorColor: AppColorTheme.black,
                         onChanged: _searchMessages,
@@ -142,15 +128,12 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                           isCollapsed: true,
                           isDense: true,
                           prefixIconConstraints:
-                              BoxConstraints(minWidth: 37.w, minHeight: 37.h),
+                          BoxConstraints(minWidth: 37.w, minHeight: 37.h),
                           prefixIcon: Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.5.w, bottom: 8.5.w, left: 8.5.w),
-                            child: SvgPicture.asset(AppMedia.search,
-                                color: AppColorTheme.black40),
+                            padding: EdgeInsets.only(top: 8.5.w, bottom: 8.5.w, left: 8.5.w),
+                            child: SvgPicture.asset(AppMedia.search, color: AppColorTheme.black40),
                           ),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 1.5.h, vertical: 0),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 1.5.h, vertical: 0),
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.transparent,
@@ -167,8 +150,7 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                           if (chatProvider.matchedIndexes.isNotEmpty) ...[
                             Text(
                               "${(chatProvider.currentMatchIndex >= 0 ? chatProvider.currentMatchIndex + 1 : 0)} / ${chatProvider.matchedIndexes.length}",
-                              style: AppFontStyles.dmSansRegular
-                                  .copyWith(color: AppColorTheme.inputTitle),
+                              style: AppFontStyles.dmSansRegular.copyWith(color: AppColorTheme.inputTitle),
                             ),
                             SizedBox(
                               width: 8.w,
@@ -181,9 +163,7 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                                     AppMedia.upArrow,
                                     height: 16.h,
                                     width: 16.w,
-                                    color: upArrowClicked
-                                        ? AppColorTheme.dark66
-                                        : AppColorTheme.muted,
+                                    color: upArrowClicked ? AppColorTheme.dark66 : AppColorTheme.muted,
                                   )),
                             ),
                             Padding(
@@ -194,10 +174,9 @@ class _UserMessageSearchHeaderState extends State<UserMessageSearchHeader> {
                                     AppMedia.downArrow,
                                     height: 16.h,
                                     width: 16.w,
-                                    color: downArrowClicked
-                                        ? AppColorTheme.dark66
-                                        : AppColorTheme.muted,
-                                  )),
+                                    color: downArrowClicked ? AppColorTheme.dark66 : AppColorTheme.muted,
+                                  )
+                              ),
                             ),
                           ]
                         ],

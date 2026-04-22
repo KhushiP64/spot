@@ -75,8 +75,7 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
       final currentUser = await CommonFunctions.getLoginUser();
       final nowUtc = DateTime.now().toUtc();
       final timestamp = nowUtc.millisecondsSinceEpoch;
-      final id =
-          "${currentUser['iUserId']}_${dataListProvider.openedChatUserData['iUserId']}_$timestamp";
+      final id = "${currentUser['iUserId']}_${dataListProvider.openedChatUserData['iUserId']}_$timestamp";
       SocketMessageEvents.sendMessageEvent(
         receiverChatID: dataListProvider.openedChatUserData['iUserId'],
         senderChatID: currentUser['iUserId'],
@@ -108,14 +107,11 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
         builder: (BuildContext context) {
           return Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: GroupInfoMenu(
-                  groupId: dataListProvider.openedChatGroupData['_id']));
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: GroupInfoMenu(groupId: dataListProvider.openedChatGroupData['_id']));
         });
   }
 
@@ -153,19 +149,16 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
     final userData = dataListProvider.openedChatUserData;
     final isInChat = widget.subTitle == 'chat' && userData.isNotEmpty;
 
-    final Color statusColor =
-        userData["iStatus"] == 0 ? AppColorTheme.danger : AppColorTheme.success;
+    final Color statusColor = userData["iStatus"] == 0 ? AppColorTheme.danger : AppColorTheme.success;
 
     final mediaQuery = MediaQuery.of(context);
 
     // *********************** handle on press back ************************
     void handleBackPress() {
       if (isInChat) {
-        Navigator.pushReplacementNamed(context, '/chatList',
-            arguments: {'tabIndex': 0});
+        Navigator.pushReplacementNamed(context, '/chatList', arguments: {'tabIndex': 0});
       } else {
-        Navigator.pushReplacementNamed(context, '/chatList',
-            arguments: {'tabIndex': 1});
+        Navigator.pushReplacementNamed(context, '/chatList', arguments: {'tabIndex': 1});
       }
       final dataListProvider = context.read<DataListProvider>();
       final chatProvider = context.read<ChatProvider>();
@@ -186,7 +179,8 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
     void handleOnPressOpenMoreMenus() async {
       CommonModal.show(
           context: context,
-          child: UserChatHeaderMenu(currentUser: widget.currentUser));
+          child: UserChatHeaderMenu(currentUser: widget.currentUser)
+      );
       // final updatedGroupData = await showModalBottomSheet(
       //   context: context,
       //   shape: const RoundedRectangleBorder(
@@ -207,37 +201,27 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
     // Font size scaling
     double requestBtnFontSize = 12;
 
-    final bool showRequestChatButton = isInChat &&
-        dataListProvider.openedChatUserData.isNotEmpty &&
-        dataListProvider.openedChatUserData['iRequestMsg'] != null &&
-        dataListProvider.openedChatUserData['iRequestMsg'] != 0 &&
-        dataListProvider.openedChatUserData['iRequestMsg'] != 1;
+    final bool showRequestChatButton = isInChat && dataListProvider.openedChatUserData.isNotEmpty && dataListProvider.openedChatUserData['iRequestMsg'] != null && dataListProvider.openedChatUserData['iRequestMsg'] != 0 && dataListProvider.openedChatUserData['iRequestMsg'] != 1;
     return WillPopScope(
       onWillPop: () {
         handleBackPress();
         return Future.value(false);
       },
       child: Container(
-          margin:
-              EdgeInsets.only(left: 12.w, right: 20.w, top: 10.h, bottom: 12.h),
+          margin: EdgeInsets.only(left: 12.w, right: 20.w, top: 5.h, bottom: 12.h),
           child: dataListProvider.openedChatUserData.isNotEmpty
               ? Consumer<DataListProvider>(
                   builder: (context, dataListProvider, child) {
                     // ✅ condition: check if request button should show
-                    bool showRequestChatButton = (isInChat &&
-                        dataListProvider.openedChatUserData['isStartChat'] !=
-                            null &&
-                        dataListProvider.openedChatUserData['eStatus'] != 'n' &&
-                        dataListProvider.openedChatUserData['isStartChat'] !=
-                            1 &&
-                        (dataListProvider.openedChatUserData['iRequestMsg'] ==
-                                3 ||
-                            dataListProvider
-                                    .openedChatUserData['iRequestMsg'] ==
-                                4 ||
-                            dataListProvider
-                                    .openedChatUserData['iRequestMsg'] ==
-                                5));
+                    bool showRequestChatButton = (
+                      isInChat
+                      && dataListProvider.openedChatUserData['isStartChat'] != null
+                      && dataListProvider.openedChatUserData['eStatus'] != 'n' && dataListProvider.openedChatUserData['isStartChat'] != 1
+                      && (dataListProvider.openedChatUserData['iRequestMsg'] == 3
+                      || dataListProvider.openedChatUserData['iRequestMsg'] == 4
+                      || dataListProvider.openedChatUserData['iRequestMsg'] == 5
+                    )
+                  );
 
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,21 +238,16 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
                               ),
                               Expanded(
                                 child: ChatListItem(
-                                    profileIconMarginTop: 3,
-                                    verticalPadding: 0,
-                                    statusBorderColor: AppColorTheme.white,
-                                    statusColor: statusColor,
-                                    vProfilePic: dataListProvider
-                                        .openedChatUserData['vProfilePic'],
-                                    listTitle: dataListProvider
-                                        .openedChatUserData['vFullName'],
-                                    listSubTitle:
-                                        dataListProvider.openedChatUserData[
-                                                    'iStatus'] ==
-                                                1
-                                            ? 'Online'
-                                            : 'Offline',
-                                    handleOnPressItem: () {}),
+                                  profileIconMarginTop: 3,
+                                  verticalPadding: 0,
+                                  profileSize: 40,
+                                  statusBorderColor: AppColorTheme.white,
+                                  statusColor: statusColor,
+                                  vProfilePic: dataListProvider.openedChatUserData['vProfilePic'],
+                                  listTitle: dataListProvider.openedChatUserData['vFullName'],
+                                  listSubTitle: dataListProvider.openedChatUserData['iStatus'] == 1 ? 'Online' : 'Offline',
+                                  handleOnPressItem: () {}
+                                ),
                               )
                             ],
                           ),
@@ -281,38 +260,19 @@ class _ChatMessageHeaderState extends State<ChatMessageHeader> {
                               Button(
                                 onPressed: handleOnPressRequestChat,
                                 title: 'Request Chat',
-                                textStyle: AppFontStyles.dmSansMedium.copyWith(
-                                    fontSize: 14.sp,
-                                    color: AppColorTheme.white),
+                                textStyle: AppFontStyles.dmSansMedium.copyWith(fontSize: 14.sp, color: AppColorTheme.white),
                                 backgroundColor: AppColorTheme.primary,
                                 textColor: AppColorTheme.white,
                                 paddingHorizontal: 12,
                               ),
                             SizedBox(width: 8.w),
-                            ((widget.subTitle == 'chat' &&
-                                        dataListProvider
-                                            .userMessagesList.isEmpty) ||
-                                    widget.subTitle != 'chat' &&
-                                        dataListProvider
-                                            .groupMessagesList.isEmpty)
-                                ? Container()
-                                : InkWell(
-                                    onTap: handleSearchMessageClick,
-                                    child: SvgPicture.asset(
-                                      AppMedia.searchMsg,
-                                      height: 22.h,
-                                    ),
-                                  ),
+                            ((widget.subTitle == 'chat' && dataListProvider.userMessagesList.isEmpty) || widget.subTitle != 'chat' && dataListProvider.groupMessagesList.isEmpty)
+                            ? Container()
+                            : InkWell(onTap: handleSearchMessageClick, child: SvgPicture.asset(AppMedia.searchMsg, height: 22.h,)),
                             SizedBox(width: 8.w),
-                            InkWell(
-                              onTap: handleShowPinnedMessages,
-                              child: SvgPicture.asset(AppMedia.pinChat),
-                            ),
+                            InkWell(onTap: handleShowPinnedMessages, child: SvgPicture.asset(AppMedia.pinChat)),
                             SizedBox(width: 8.w),
-                            InkWell(
-                              onTap: handleOnPressOpenMoreMenus,
-                              child: SvgPicture.asset(AppMedia.moreMenu),
-                            ),
+                            InkWell(onTap: handleOnPressOpenMoreMenus, child: SvgPicture.asset(AppMedia.moreMenu)),
                           ],
                         ),
                       ],

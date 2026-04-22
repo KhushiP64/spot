@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:spot/core/media.dart';
 import 'package:spot/core/themes.dart';
 import 'package:spot/core/utils.dart';
 import 'package:spot/providers/chat_provider.dart';
@@ -51,14 +53,15 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
     });
   }
 
-  void onChangedSearchAddUser(
-      {required String value,
-      required List listData,
-      required String name}) async {
+  void onChangedSearchAddUser({
+    required String value,
+    required List listData,
+    required String name
+  }) async {
     final provider = context.read<DataListProvider>();
     final searchText = value.trim().toLowerCase();
 
-    setState(() {
+   setState(() {
       if (searchText.isEmpty) {
         // provider.setUserChatList(provider.userChatListOriginalData);
         provider.getUserChatListData(page: 1, searchText: '');
@@ -115,13 +118,10 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
       // }
       //
 
-      if (chatProvider.isUserEditing &&
-          _controller.document.toPlainText().trim() !=
-              chatProvider.userEditingText.trim()) {
+      if (chatProvider.isUserEditing && _controller.document.toPlainText().trim() != chatProvider.userEditingText.trim()) {
         _controller = quill.QuillController(
           document: quill.Document()..insert(0, chatProvider.userEditingText),
-          selection: TextSelection.collapsed(
-              offset: chatProvider.userEditingText.length),
+          selection: TextSelection.collapsed(offset: chatProvider.userEditingText.length),
         );
       }
     }
@@ -130,22 +130,22 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
   // ************** click on forward icon ********************
   void handleOnClickForwardMsg(BuildContext ctx) async {
     try {
-      final dataListProvider =
-          Provider.of<DataListProvider>(ctx, listen: false);
+      final dataListProvider = Provider.of<DataListProvider>(ctx, listen: false);
       await dataListProvider.getForwardUsers();
       final currentUser = await CommonFunctions.getLoginUser();
       if (!mounted) return; // safety before showing UI
 
       ForwardBottomSheet.show(
-          context: ctx,
-          currentUser: currentUser,
-          searchUsers: searchController,
-          controller: _scrollController,
-          closeForwardListModal: () {
-            closeForwardListModal(ctx);
-          },
-          onSearchChanged: onChangedSearchForwardUsers,
-          isGroupMsgs: false);
+        context: ctx,
+        currentUser: currentUser,
+        searchUsers: searchController,
+        controller: _scrollController,
+        closeForwardListModal: () {
+          closeForwardListModal(ctx);
+        },
+        onSearchChanged: onChangedSearchForwardUsers,
+        isGroupMsgs: false
+      );
     } catch (error) {
       // print("Error while getting forward user list:--- $error");
     }
@@ -179,8 +179,7 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
     int failCount = 0;
 
     for (var selectedImage in chatProvider.selectedMsgs) {
-      final success = await CommonFunctions.downloadFileWithPermission(
-          selectedImage['vFiles'], selectedImage['isOriginalName'], context);
+      final success = await CommonFunctions.downloadFileWithPermission(selectedImage['vFiles'], selectedImage['isOriginalName'], context);
 
       if (success) {
         successCount++;
@@ -194,8 +193,8 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
       toastification.show(
         context: context,
         title: chatProvider.selectedMsgs.length == 1
-            ? const Text('File downloaded successfully!')
-            : const Text('All files downloaded successfully!'),
+          ? const Text('File downloaded successfully!')
+          : const Text('All files downloaded successfully!'),
         type: ToastificationType.success,
         style: ToastificationStyle.flat,
         autoCloseDuration: const Duration(seconds: 3),
@@ -253,12 +252,7 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
       }
 
       final currentUser = await CommonFunctions.getLoginUser();
-      final response = await CommonFunctions.deleteUserMessage(
-          selectedMsgIds,
-          "",
-          dataListProvider.openedChatUserData['iUserId'],
-          0,
-          currentUser['iUserId']);
+      final response = await CommonFunctions.deleteUserMessage(selectedMsgIds, "", dataListProvider.openedChatUserData['iUserId'], 0, currentUser['iUserId']);
       // print('Response delete messages ${response['fullMessageData']}');
       if (!mounted) {
         return;
@@ -268,9 +262,10 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
         if (response != null && response['fullMessageData'].isNotEmpty) {}
         final dataListProvider = context.read<DataListProvider>();
         final originalList = CommonFunctions.replaceMatchingItemsById(
-            context: context,
-            originalList: dataListProvider.userMessagesList,
-            updatedList: response['fullMessageData']);
+          context: context,
+          originalList: dataListProvider.userMessagesList,
+          updatedList: response['fullMessageData']
+        );
         // debugPrint("originalList $originalList", wrapWidth: 1024);
         dataListProvider.setUserMessageList(originalList);
       }
@@ -286,42 +281,31 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
     final chatProvider = context.watch<ChatProvider>();
 
     return SizedBox(
-      height: 45,
+      height: 64.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              CommonWidgets.selectedMsgHeaderIcon(
-                  iconName: FeatherIcons.chevronLeft,
-                  onIconTap: handleOnClickBackSelectedMsg),
-              Text("${chatProvider.selectedMsgs.length} Selected",
-                  style: AppFontStyles.dmSansMedium
-                      .copyWith(fontSize: 14, color: AppColorTheme.dark87))
+              SizedBox(width: 4.w,),
+              CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.selectedHeaderBack, onIconTap: handleOnClickBackSelectedMsg),
+              Text("${chatProvider.selectedMsgs.length} Selected", style: AppFontStyles.dmSansMedium.copyWith(fontSize: 14.sp, color: AppColorTheme.black87))
             ],
           ),
           Row(
             children: [
+              if (chatProvider.isShowPinMsgIcon)
+                CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.pin, onIconTap: handleOnClickReplyMsg),
               if (chatProvider.isShowReplyIcon)
-                CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.cornerUpLeft,
-                    onIconTap: handleOnClickReplyMsg),
+                CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.reply, onIconTap: handleOnClickReplyMsg),
               if (chatProvider.isShowEditIcon)
-                CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.edit3,
-                    onIconTap: handleOnClickEditMsg),
-              CommonWidgets.selectedMsgHeaderIcon(
-                iconName: FeatherIcons.cornerUpRight,
-                onIconTap: () => handleOnClickForwardMsg(context),
-              ),
+                CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.msgEdit, onIconTap: handleOnClickEditMsg),
+              CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.forward, onIconTap: () => handleOnClickForwardMsg(context)),
               if (chatProvider.isShowDownloadIcon)
-                CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.download,
-                    onIconTap: handleOnClickDownloadMsg),
+                CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.download, onIconTap: handleOnClickDownloadMsg),
               if (chatProvider.isShowDeleteIcon)
-                CommonWidgets.selectedMsgHeaderIcon(
-                    iconName: FeatherIcons.trash2,
-                    onIconTap: handleOnClickDeleteMsg),
+                CommonWidgets.selectedMsgHeaderIcon(iconName: AppMedia.delete, onIconTap: handleOnClickDeleteMsg),
+              SizedBox(width: 4.w,)
             ],
           )
         ],

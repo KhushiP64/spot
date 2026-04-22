@@ -603,8 +603,7 @@ class _UserChatsState extends State<UserChats> {
                 child: Container(
                   margin: const EdgeInsets.only(top: 0),
                   color: AppColorTheme.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                   child: Column(
                     children: [
                       Consumer2<ChatProvider, DataListProvider>(
@@ -612,38 +611,27 @@ class _UserChatsState extends State<UserChats> {
                             (context, chatProvider, dataListProvider, child) {
                           return chatProvider.isGroupSearching
                               ? GroupSearchHeader(
-                                  searchMessage:
-                                      chatProvider.groupSearchController,
-                                  scrollController: _groupScrollController,
-                                )
+                                searchMessage: chatProvider.groupSearchController,
+                                scrollController: _groupScrollController,
+                              )
                               : chatProvider.isSearching
                                   ? SearchHeader(
-                                      searchMessage:
-                                          chatProvider.searchController,
-                                      scrollController: _scrollController,
-                                    )
+                                    searchMessage: chatProvider.searchController,
+                                    scrollController: _scrollController,
+                                  )
                                   : chatProvider.msgSelectionMode
                                       ? SelectMsgHeader()
                                       : chatProvider.groupMsgSelectionMode
-                                          ? SelectGroupMsgHeader()
-                                          : UserChatHeader(
-                                              currentUser: currentUser,
-                                              subTitle: type == 'chat'
-                                                  ? 'chat'
-                                                  : 'group',
-                                              groupMessageList:
-                                                  groupMessageList,
-                                              userMessageList: userMessageList,
-                                            );
+                                        ? SelectGroupMsgHeader()
+                                        : UserChatHeader(
+                                          currentUser: currentUser,
+                                          subTitle: type == 'chat' ? 'chat' : 'group',
+                                          groupMessageList: groupMessageList,
+                                          userMessageList: userMessageList,
+                                        );
                         },
                       ),
-                      const Divider(
-                        color: AppColorTheme.border,
-                        thickness: 1,
-                        height: 25,
-                        indent: 6,
-                        endIndent: 6,
-                      ),
+                      Divider(color: AppColorTheme.border, thickness: 1, height: 25, indent: 6, endIndent: 6),
                     ],
                   ),
                 ),
@@ -655,13 +643,10 @@ class _UserChatsState extends State<UserChats> {
                 Consumer<DataListProvider>(
                     builder: (context, dataListProvider, child) {
                   return Expanded(
-                      child: type == 'chat'
-                          ? MessageList(
-                              scrollController: _scrollController,
-                            )
-                          : GroupMessageList(
-                              scrollController: _groupScrollController,
-                            ));
+                    child: type == 'chat'
+                    ? MessageList(scrollController: _scrollController)
+                    : GroupMessageList(scrollController: _groupScrollController)
+                  );
                 }),
                 Consumer<ChatProvider>(
                   builder: (context, chatProvider, _) {
@@ -673,23 +658,18 @@ class _UserChatsState extends State<UserChats> {
                           TypingText("typing..."),
                         ],
                       );
-                    } else if (type == 'group' &&
-                        chatProvider.showGroupTyping) {
+                    } else if (type == 'group' && chatProvider.showGroupTyping) {
                       final dataListProvider = context.read<DataListProvider>();
-                      final groupId =
-                          dataListProvider.openedChatGroupData['_id'] ?? "";
-                      final typingUsers =
-                          chatProvider.getTypingUsers(groupId).toList();
+                      final groupId = dataListProvider.openedChatGroupData['_id'] ?? "";
+                      final typingUsers = chatProvider.getTypingUsers(groupId).toList();
                       if (typingUsers.isNotEmpty) {
                         String typingMsg;
                         if (typingUsers.length == 1) {
                           typingMsg = "${typingUsers[0]} is typing...";
                         } else if (typingUsers.length == 2) {
-                          typingMsg =
-                              "${typingUsers[0]}, ${typingUsers[1]} are typing...";
+                          typingMsg = "${typingUsers[0]}, ${typingUsers[1]} are typing...";
                         } else {
-                          typingMsg =
-                              "${typingUsers[0]}, ${typingUsers[1]} +${typingUsers.length - 2} more are typing...";
+                          typingMsg = "${typingUsers[0]}, ${typingUsers[1]} +${typingUsers.length - 2} more are typing...";
                         }
                         return Row(
                           children: [
@@ -707,25 +687,20 @@ class _UserChatsState extends State<UserChats> {
                   builder: (context, dataListProvider, child) {
                     final userData = dataListProvider.openedChatUserData;
                     final menu = dataListProvider.groupMessages.isNotEmpty
-                        ? dataListProvider.groupMessages['menu']
-                        : 0;
+                      ? dataListProvider.groupMessages['menu']
+                      : 0;
 
-                    final showUserInput = userData.containsKey('isStartChat') &&
-                        userData['isStartChat'] == 1 &&
-                        userData['eStatus'] != 'n';
-                    final showGroupInput =
-                        dataListProvider.groupMessages.isNotEmpty &&
-                            (menu == 0 || menu == 2 || menu == 4) &&
-                            (menu != 1 || menu != 3);
+                    final showUserInput = userData.containsKey('isStartChat') && userData['isStartChat'] == 1 && userData['eStatus'] != 'n';
+                    final showGroupInput = dataListProvider.groupMessages.isNotEmpty && (menu == 0 || menu == 2 || menu == 4) && (menu != 1 || menu != 3);
 
                     if (type == 'chat' && showUserInput) {
-                      return UserChatMessageBox(
-                          sendMessageText: sendMessageText, type: type);
+                      return UserChatMessageBox(sendMessageText: sendMessageText, type: type);
                     } else if (type == 'group' && showGroupInput) {
                       return GroupChatMessageBox(
-                          sendMessageText: sendMessageText,
-                          messageList: groupMessageList,
-                          type: type);
+                        sendMessageText: sendMessageText,
+                        messageList: groupMessageList,
+                        type: type
+                      );
                     } else {
                       return Container();
                     }
