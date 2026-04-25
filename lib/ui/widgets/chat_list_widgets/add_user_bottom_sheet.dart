@@ -262,8 +262,7 @@ class _AddUserBottomSheetState extends State<AddUserBottomSheet> {
         return Future.value(false);
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -274,10 +273,10 @@ class _AddUserBottomSheetState extends State<AddUserBottomSheet> {
             ),
             // ****************** search bar *****************
             CustomSearchBar(
-                margin: EdgeInsets.only(
-                    top: AppSizes.horizontalAppPadding, bottom: 6.h),
-                searchValue: widget.searchAddUser,
-                onChangedSearchValue: widget.onSearchChanged),
+              margin: EdgeInsets.only(top: AppSizes.horizontalAppPadding, bottom: 6.h),
+              searchValue: widget.searchAddUser,
+              onChangedSearchValue: widget.onSearchChanged
+            ),
             SizedBox(height: 10.h),
             Expanded(
               child: Consumer2<GroupProvider, DataListProvider>(
@@ -286,55 +285,45 @@ class _AddUserBottomSheetState extends State<AddUserBottomSheet> {
                 final userChatList = dataListProvider.userChatList;
 
                 return userChatList.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: isGroupMode
-                            ? userChatList.length
-                            : userChatList.length,
-                        controller: widget.controller,
-                        itemBuilder: (context, index) {
-                          if (index >= userChatList.length) return SizedBox();
-                          final user = userChatList[index];
-                          final bool isSelected =
-                              selectedUsers.contains(user['iUserId']);
-                          final Color statusColor = user['iStatus'] == 0
-                              ? AppColorTheme.danger
-                              : AppColorTheme.success;
+                  ? ListView.builder(
+                    itemCount: isGroupMode ? userChatList.length : userChatList.length,
+                    controller: widget.controller,
+                    itemBuilder: (context, index) {
+                      if (index >= userChatList.length) return SizedBox();
+                      final user = userChatList[index];
+                      final bool isSelected = selectedUsers.contains(user['iUserId']);
+                      final Color statusColor = user['iStatus'] == 0 ? AppColorTheme.danger : AppColorTheme.success;
 
-                          return ChatListItem(
-                            vProfilePic: user['vProfilePic'],
-                            statusColor: statusColor,
-                            listTitle: user['vFullName'],
-                            listSubTitle:
-                                user['iStatus'] == 1 ? 'Online' : 'Offline',
-                            titleStyleRegular: true,
-                            showCheckMarkIcon: isGroupMode ? true : false,
-                            isSelectedCheckMark: isSelected,
-                            showActiveBackground: isSelected ? true : false,
-                            handleOnPressItem: () => isGroupMode
-                                ? groupProvider.selectMember(user['iUserId'])
-                                : handleOnPressUser(userChatList[index]),
-                          );
-                        })
-                    : Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text("User Not Found",
-                            style: AppFontStyles.dmSansRegular.copyWith(
-                                fontSize: 15.sp,
-                                color: Color.fromRGBO(33, 37, 41, 0.65))),
+                      return ChatListItem(
+                        vProfilePic: user['vProfilePic'],
+                        statusColor: statusColor,
+                        listTitle: user['vFullName'],
+                        listSubTitle: user['iStatus'] == 1 ? 'Online' : 'Offline',
+                        titleStyleRegular: true,
+                        showCheckMarkIcon: isGroupMode ? true : false,
+                        isSelectedCheckMark: isSelected,
+                        showActiveBackground: isSelected ? true : false,
+                        handleOnPressItem: () => isGroupMode ? groupProvider.selectMember(user['iUserId']) : handleOnPressUser(userChatList[index]),
                       );
+                    })
+                  : Padding(
+                    padding: EdgeInsets.only(left: 10.w),
+                    child: Text("User Not Found", style: AppFontStyles.dmSansRegular.copyWith(fontSize: 15.sp, color: Color.fromRGBO(33, 37, 41, 0.65))),
+                  );
               }),
             ),
             isGroupMode
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: 6.h),
-                    child: Button(
-                        onPressed: widget.onNextPressed,
-                        title: 'Next',
-                        backgroundColor: AppColorTheme.primary,
-                        textColor: AppColorTheme.white,
-                        width: MediaQuery.of(context).size.width),
-                  )
-                : Text("")
+              ? Padding(
+                padding: EdgeInsets.only(bottom: 6.h),
+                child: Button(
+                  onPressed: widget.onNextPressed,
+                  title: 'Next',
+                  backgroundColor: AppColorTheme.primary,
+                  textColor: AppColorTheme.white,
+                  width: MediaQuery.of(context).size.width
+                ),
+              )
+            : Text("")
           ],
         ),
       ),

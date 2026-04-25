@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:spot/core/media.dart';
 import 'package:spot/core/themes.dart';
 import 'package:spot/providers/chat_provider.dart';
+import 'package:spot/ui/widgets/common_widgets/common_modal.dart';
 import 'package:toastification/toastification.dart';
 import 'package:video_player/video_player.dart';
 import '../../../core/utils.dart';
@@ -113,14 +114,17 @@ class _ImagePreviewState extends State<ImagePreview> {
       await dataListProvider.getForwardUsers();
       if (!mounted) return;
 
-      ForwardBottomSheet.show(
+      CommonModal.show(
         context: context,
-        currentUser: currentUser,
-        searchUsers: searchController,
-        controller: _scrollController,
-        closeForwardListModal: closeForwardListModal,
-        onSearchChanged: onChangedSearchForwardUsers,
-        isGroupMsgs: false,
+        child: ForwardBottomSheet(
+          context: context,
+          currentUser: currentUser,
+          searchUsers: searchController,
+          controller: _scrollController,
+          closeForwardListModal: closeForwardListModal,
+          onSearchChanged: onChangedSearchForwardUsers,
+          isGroupMsgs: false,
+        )
       );
     } catch (error) {
       // print("Error while getting forward user list: $error");

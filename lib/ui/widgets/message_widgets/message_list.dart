@@ -324,7 +324,6 @@ class _MessageListState extends State<MessageList> {
 
                     // ******************** handle on Long press message ********************
                     void checkIconsConditions() {
-                      print("second fuinction calling");
                       if (chatProvider.msgSelectionMode) {
                         if (messageItem['vMsgData'].isEmpty) {
                           setState(() {
@@ -388,7 +387,6 @@ class _MessageListState extends State<MessageList> {
                     void handleOnLongPressMessage() {
                       final chatProvider = context.read<ChatProvider>();
                       if (messageItem['vMsgData'].isEmpty && !chatProvider.isUserReplying && !chatProvider.isUserEditing) {
-                      print("function callling");
                         chatProvider.setIsMsgSelectionMode(true);
                         checkIconsConditions();
                         setState(() {
