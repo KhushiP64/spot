@@ -80,7 +80,6 @@ class _SelectGroupMsgHeaderState extends State<SelectGroupMsgHeader> {
           searchUsers: searchController,
           controller: _scrollController,
           closeForwardListModal: closeForwardListModal,
-          onSearchChanged: onChangedSearchForwardUsers,
           isGroupMsgs: true)
       );
     } catch (error) {
@@ -95,25 +94,6 @@ class _SelectGroupMsgHeaderState extends State<SelectGroupMsgHeader> {
       searchController.clear();
     });
     Navigator.of(context).pop();
-  }
-
-  // ****************** search user in forward modal *********************
-  void onChangedSearchForwardUsers(String value) {
-    final dataListProvider = context.read<DataListProvider>();
-    final searchText = value.trim().toLowerCase();
-
-    if (searchText.isEmpty) {
-      dataListProvider.resetForwardUserFilter();
-    } else {
-      final originalList = dataListProvider.allForwardUsers;
-
-      final filteredData = originalList.where((item) {
-        final name = item['name']?.toString().toLowerCase() ?? '';
-        return name.contains(searchText);
-      }).toList();
-
-      dataListProvider.setForwardUsersList(filteredData);
-    }
   }
 
   // ************** click on download icon ********************

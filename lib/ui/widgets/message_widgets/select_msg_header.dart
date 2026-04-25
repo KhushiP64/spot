@@ -146,30 +146,11 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
           closeForwardListModal: () {
             closeForwardListModal(ctx);
           },
-          onSearchChanged: onChangedSearchForwardUsers,
           isGroupMsgs: false
         )
       );
     } catch (error) {
       // print("Error while getting forward user list:--- $error");
-    }
-  }
-
-  void onChangedSearchForwardUsers(String value) {
-    final dataListProvider = context.read<DataListProvider>();
-    final searchText = value.trim().toLowerCase();
-
-    if (searchText.isEmpty) {
-      dataListProvider.resetForwardUserFilter();
-    } else {
-      final originalList = dataListProvider.allForwardUsers;
-
-      final filteredData = originalList.where((item) {
-        final name = item['name']?.toString().toLowerCase() ?? '';
-        return name.contains(searchText);
-      }).toList();
-
-      dataListProvider.setForwardUsersList(filteredData);
     }
   }
 

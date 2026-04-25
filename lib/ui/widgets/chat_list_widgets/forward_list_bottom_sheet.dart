@@ -19,7 +19,6 @@ import '../common_widgets/button.dart';
 class ForwardBottomSheet extends StatefulWidget {
   BuildContext context;
   TextEditingController searchUsers;
-  ValueChanged<String> onSearchChanged;
   VoidCallback closeForwardListModal;
   ScrollController controller;
   Map<String, dynamic>? currentUser;
@@ -29,7 +28,6 @@ class ForwardBottomSheet extends StatefulWidget {
     super.key,
     required this.context,
     required this.searchUsers,
-    required this.onSearchChanged,
     required this.closeForwardListModal,
     required this.controller,
     required this.currentUser,
@@ -167,6 +165,25 @@ class _ForwardBottomSheetState extends State<ForwardBottomSheet> {
       }
     }
 
+    // ****************** search user in forward modal *********************
+    void onChangedSearchForwardUsers(String value) {
+      final dataListProvider = context.read<DataListProvider>();
+      final searchText = value.trim().toLowerCase();
+
+      if (searchText.isEmpty) {
+        dataListProvider.resetForwardUserFilter();
+      } else {
+        final originalList = dataListProvider.allForwardUsers;
+
+        final filteredData = originalList.where((item) {
+          final name = item['name']?.toString().toLowerCase() ?? '';
+          return name.contains(searchText);
+        }).toList();
+
+        dataListProvider.setForwardUsersList(filteredData);
+      }
+    }
+
     return WillPopScope(
       onWillPop: () {
         widget.closeForwardListModal();
@@ -175,7 +192,7 @@ class _ForwardBottomSheetState extends State<ForwardBottomSheet> {
       child: Column(
         children: [
           ModalHeader(name: "Forward To...", onTapCloseAction: widget.closeForwardListModal),
-          CustomSearchBar(searchValue: widget.searchUsers, onChangedSearchValue: (value) {widget.onSearchChanged(value);}, margin: null),
+          CustomSearchBar(searchValue: widget.searchUsers, onChangedSearchValue: (value) {onChangedSearchForwardUsers(value);}, margin: null),
 
           SizedBox(height: 10.h),
           Expanded(
