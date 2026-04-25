@@ -11,6 +11,7 @@ import 'package:spot/core/utils.dart';
 import 'package:spot/providers/chat_provider.dart';
 import 'package:spot/providers/data_list_provider.dart';
 import 'package:spot/ui/widgets/common_widgets/commonWidgets.dart';
+import 'package:spot/ui/widgets/common_widgets/common_modal.dart';
 import 'package:spot/ui/widgets/common_widgets/confirm_center_modal.dart';
 import 'package:toastification/toastification.dart';
 import '../chat_list_widgets/forward_list_bottom_sheet.dart';
@@ -135,16 +136,19 @@ class _SelectMsgHeaderState extends State<SelectMsgHeader> {
       final currentUser = await CommonFunctions.getLoginUser();
       if (!mounted) return; // safety before showing UI
 
-      ForwardBottomSheet.show(
-        context: ctx,
-        currentUser: currentUser,
-        searchUsers: searchController,
-        controller: _scrollController,
-        closeForwardListModal: () {
-          closeForwardListModal(ctx);
-        },
-        onSearchChanged: onChangedSearchForwardUsers,
-        isGroupMsgs: false
+      CommonModal.show(
+        context: context,
+        child: ForwardBottomSheet(
+          context: ctx,
+          currentUser: currentUser,
+          searchUsers: searchController,
+          controller: _scrollController,
+          closeForwardListModal: () {
+            closeForwardListModal(ctx);
+          },
+          onSearchChanged: onChangedSearchForwardUsers,
+          isGroupMsgs: false
+        )
       );
     } catch (error) {
       // print("Error while getting forward user list:--- $error");

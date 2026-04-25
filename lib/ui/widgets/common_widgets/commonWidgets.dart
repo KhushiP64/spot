@@ -574,7 +574,7 @@ class CommonWidgets {
 
   // ************************** chat bubble ui **************************
 
-  static double chatBubbleWidth = 0.66;
+  static double chatBubbleWidth = 0.62;
 
   static Widget chatBubbleUI(
       {required bool isSender,
