@@ -716,7 +716,7 @@ class CommonWidgets {
                 children: [
                   Container(
                     width: 2,
-                    margin: const EdgeInsets.only(top: 11,bottom: 10,left: 8,right: 8),
+                    // margin: const EdgeInsets.only(top: 11,bottom: 10,left: 8,right: 8),
                     padding: EdgeInsets.only(top: 10,bottom: 10),
                     decoration: const BoxDecoration(
                       color: AppColorTheme.primary,
