@@ -710,7 +710,16 @@ class CommonWidgets {
         childWidget: Column(
           children: [
             Container(
-              color: AppColorTheme.white,
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: AppColorTheme.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
+                  topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
+                  bottomLeft: Radius.circular(12.w),
+                  bottomRight: Radius.circular(12.w),
+                )
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
