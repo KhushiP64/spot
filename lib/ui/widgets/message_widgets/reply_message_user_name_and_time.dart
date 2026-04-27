@@ -16,32 +16,51 @@ class ReplyMessageUserNameAndTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "sendUserNamesendUserNamesendUserNamesendUserNamesendUserNamesendUserNamesendUserNamesendUserNamesendUserNamesendUserName",
+
+    Widget nameTimeUI(String text, Color txtColor){
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: Text(
+          text,
           softWrap: true,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AppFontStyles.dmSansMedium.copyWith(
             fontSize: 11.sp,
-            color: AppColorTheme.dark70,
+            color: txtColor,
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 6.w),
-          child: Text(
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            fit: FlexFit.loose,
+            child: Text(
+              sendUserName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppFontStyles.dmSansMedium.copyWith(
+                fontSize: 11.sp,
+                color: AppColorTheme.dark70,
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Text(
             formattedTime,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
             style: AppFontStyles.dmSansMedium.copyWith(
               fontSize: 11.sp,
               color: AppColorTheme.dark40,
             ),
-          ),
-        ),
-      ],
+          )
+        ],
+      ),
     );
   }
 }

@@ -472,7 +472,7 @@ class CommonFunctions {
     try {
       if (date == null || date.trim().isEmpty) return '-';
       DateTime dateTime = DateTime.parse(date);
-      return DateFormat('dd MMM yyyy h:mm a').format(dateTime);
+      return DateFormat('dd MMM yyyy hh:mm a').format(dateTime);
     } catch (e) {
       // print('Invalid date format: $date');
       return '-';
