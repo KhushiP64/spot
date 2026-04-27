@@ -15,6 +15,7 @@ import 'package:spot/ui/widgets/common_widgets/button.dart';
 import 'package:spot/ui/widgets/common_widgets/input.dart';
 import 'package:spot/ui/widgets/common_widgets/large_profile_pic.dart';
 import 'package:spot/ui/widgets/message_widgets/convert_decoded_text_to_html_style.dart';
+import 'package:spot/ui/widgets/message_widgets/reply_message_user_name_and_time.dart';
 
 class CommonWidgets {
   // ********************** Modal widgets *************************
@@ -688,6 +689,157 @@ class CommonWidgets {
         ),
       ),
     );
+  }
+
+  static Widget chatReplyMessageUI({
+    required BuildContext context,
+    required bool isSender,
+    required Map<String, dynamic> messageItem,
+    required bool isReplyMsgSvg
+  }){
+
+    print("messageItem $messageItem");
+    print("isSender $isSender");
+    print("isReplyMsgSvg $isReplyMsgSvg");
+
+  final chatProvider = context.read<ChatProvider>();
+
+    return CommonWidgets.chatBubbleUI(
+        isSender: isSender,
+        width: MediaQuery.of(context).size.width * 0.62,
+        childWidget: Column(
+          children: [
+            Container(
+              color: AppColorTheme.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 2,
+                    margin: const EdgeInsets.only(top: 11,bottom: 10,left: 8,right: 8),
+                    padding: EdgeInsets.only(top: 10,bottom: 10),
+                    decoration: const BoxDecoration(
+                      color: AppColorTheme.primary,
+                      boxShadow: [BoxShadow(color: Color.fromRGBO(0, 163, 239, 0.5), offset: Offset(2, 0), blurRadius: 9, spreadRadius: 0,),],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ReplyMessageUserNameAndTime(
+                          formattedTime: CommonFunctions.dateFormat(messageItem['vReplyMsgData']['vReplyDate']),
+                          sendUserName: messageItem['vReplyMsgData']['vReplyUserName'],
+                        ),
+                        SizedBox(height: 6),
+
+                        if (messageItem['vReplyMsgData']['vReplyFilePath'] != "")
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: isReplyMsgSvg
+                                      ? SvgPicture.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, placeholderBuilder: (context) => const SizedBox(height: 140, child: Center(child: CircularProgressIndicator())),)
+                                      : Image.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, errorBuilder: (context, error, stack) => const SizedBox(height: 140, child: Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey,))),
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return const SizedBox(height: 140, child: Center(child: CircularProgressIndicator()));
+                                      }
+                                  ),
+                                ),
+                                // const SizedBox(height: 6),
+                                ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyFileName'],highlightText: chatProvider.searchController.text,),
+                              ],
+                            ),
+                          )
+                        else
+                          ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyMsg'],highlightText: chatProvider.searchController.text,),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['message'],highlightText: chatProvider.searchController.text, ),
+
+          ],
+        )
+    );
+    //   Column(
+    //   crossAxisAlignment: CrossAxisAlignment.start,
+    //   children: [
+    //     IntrinsicHeight(
+    //       child: Container(margin: const EdgeInsets.all(6),
+    //         decoration: BoxDecoration(color: AppColorTheme.white, borderRadius: BorderRadius.only(
+    //           topLeft: isSender ? const Radius.circular(14) : const Radius.circular(0),
+    //           topRight: isSender ? const Radius.circular(0) : const Radius.circular(14),
+    //           bottomLeft: const Radius.circular(14),
+    //           bottomRight: const Radius.circular(14),),),
+    //         child:
+    //         Row(
+    //           children: [
+    //             Container(
+    //               width: 2,
+    //               margin: const EdgeInsets.only(top: 11,bottom: 10,left: 8,right: 8),
+    //               padding: EdgeInsets.only(top: 10,bottom: 10),
+    //               decoration: const BoxDecoration(
+    //                 color: AppColorTheme.primary,
+    //                 boxShadow: [BoxShadow(color: Color.fromRGBO(0, 163, 239, 0.5), offset: Offset(2, 0), blurRadius: 9, spreadRadius: 0,),],
+    //               ),
+    //             ),
+    //             Expanded(
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Padding(
+    //                     padding: const EdgeInsets.only(top: 10, right: 5),
+    //                     child: ReplyMessageUserNameAndTime(
+    //                       formattedTime: CommonFunctions.dateFormat(messageItem['vReplyMsgData']['vReplyDate']),
+    //                       sendUserName: messageItem['vReplyMsgData']['vReplyUserName'],
+    //                     ),
+    //                   ),
+    //                   const SizedBox(height: 6),
+    //
+    //                   if (messageItem['vReplyMsgData']['vReplyFilePath'] != "")
+    //                     Padding(
+    //                       padding: const EdgeInsets.only(right: 8),
+    //                       child: Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.start,
+    //                         children: [
+    //                           ClipRRect(
+    //                             borderRadius: BorderRadius.circular(6),
+    //                             child: isReplyMsgSvg
+    //                               ? SvgPicture.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, placeholderBuilder: (context) => const SizedBox(height: 140, child: Center(child: CircularProgressIndicator())),)
+    //                               : Image.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, errorBuilder: (context, error, stack) => const SizedBox(height: 140, child: Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey,))),
+    //                                 loadingBuilder: (context, child, loadingProgress) {
+    //                                   if (loadingProgress == null) return child;
+    //                                     return const SizedBox(height: 140, child: Center(child: CircularProgressIndicator()));
+    //                                   }
+    //                             ),
+    //                           ),
+    //                           // const SizedBox(height: 6),
+    //                           ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyFileName'],highlightText: chatProvider.searchController.text,),
+    //                         ],
+    //                       ),
+    //                     )
+    //                   else
+    //                     ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyMsg'],highlightText: chatProvider.searchController.text,),
+    //                 ],
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //     // const SizedBox(height: 6),
+    //     ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['message'],highlightText: chatProvider.searchController.text, ),
+    //   ],
+    // );
   }
 
   // ************************* Files in chat *******************************
