@@ -17,22 +17,6 @@ class ReplyMessageUserNameAndTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Widget nameTimeUI(String text, Color txtColor){
-      return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
-        child: Text(
-          text,
-          softWrap: true,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: AppFontStyles.dmSansMedium.copyWith(
-            fontSize: 11.sp,
-            color: txtColor,
-          ),
-        ),
-      );
-    }
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: Row(
