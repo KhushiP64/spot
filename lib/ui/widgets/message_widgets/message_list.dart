@@ -475,6 +475,7 @@ class _MessageListState extends State<MessageList> {
                                         Column(
                                           crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                           children: [
+                                            ///Image in message
                                             messageItem['vFiles'] != ""
                                               ? CommonFunctions.isImage(messageItem['vFiles'])
                                                 ? messageItem['isFileCon'] == 'image' &&
@@ -499,7 +500,9 @@ class _MessageListState extends State<MessageList> {
                                                       child: Icon(Icons.image_not_supported, size: 40.w, color: Colors.grey),
                                                     )
                                                   )
-                                                : messageItem['isFileCon'] == 'File' && !messageItem['vFiles'].toString().endsWith("gif") && !messageItem['vFiles'].toString().endsWith("mp3")
+
+                                                /// Files in message
+                                                 : messageItem['isFileCon'] == 'File' && !messageItem['vFiles'].toString().endsWith("gif") && !messageItem['vFiles'].toString().endsWith("mp3")
                                                   ? CommonWidgets.chatMessageFileUI(
                                                     messageItem: messageItem,
                                                     isSender: isSender,
@@ -512,25 +515,33 @@ class _MessageListState extends State<MessageList> {
                                                     handleOnTapDownload: () {
                                                       CommonFunctions.downloadFileWithPermission(messageItem['vFiles'], messageItem['isOriginalName'], context);
                                                     })
+
+                                                  /// Video in message
                                                   : messageItem['isFileCon'] == 'video'
-                                                    ? CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){
-                                                      // openImagePreviewScreen("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
-                                                      openImagePreviewScreen("https://www.w3schools.com/html/mov_bbb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
-                                                    })
-                                                    : messageItem['vFiles'].toString().endsWith("gif")
-                                                      ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
-                                                        openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
-                                                      })
-                                                      : messageItem['vFiles'].toString().endsWith("mp3")
-                                                        ? AudioMessageBubble(
-                                                          url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-                                                          isSender: isSender,
-                                                          audioName: messageItem['isOriginalName'],
-                                                        )
-                                                        // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
-                                                        : Container()
-                                    
-                                                /// Chat Message Text
+                                                  ? CommonWidgets.chatMessageVideoUI(messageItem['vFiles'], (){
+                                                    // openImagePreviewScreen("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                                    openImagePreviewScreen("https://www.w3schools.com/html/mov_bbb.mp4", messageItem['isOriginalName'], messageItem, isVideo: true);
+                                                  })
+
+                                                  /// Gif in message
+                                                  : messageItem['vFiles'].toString().endsWith("gif")
+                                                  ? CommonWidgets.chatMessageImageUI(messageItem['vFiles'], () {
+                                                    openImagePreviewScreen(messageItem['vFiles'], messageItem['isOriginalName'], messageItem);
+                                                  })
+
+                                                  /// Audio in message
+                                                  : messageItem['vFiles'].toString().endsWith("mp3")
+                                                  ? AudioMessageBubble(
+                                                    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                                                    isSender: isSender,
+                                                    audioName: messageItem['isOriginalName'],
+                                                  )
+                                                  // CommonWidgets.chatMessageAudioUI(url: messageItem['vFiles'], isSender: isSender, width: MediaQuery.of(context).size.width * 0.66)
+                                                  : Container()
+
+                                              :  messageItem['vReplyMsg_id'] != "" && messageItem['vReplyMsgData']is Map && messageItem['vReplyMsgData'].isNotEmpty ?
+                                                CommonWidgets.chatReplyMessageUI(context: context, messageItem: messageItem, isSender: isSender, isReplyMsgSvg: isReplyMsgSvg)
+                                              /// Chat Message Text
                                               : CommonWidgets.chatMessageTextUI(messageText: messageText, isSender: isSender, width: MediaQuery.of(context).size.width * CommonWidgets.chatBubbleWidth),
                                     
                                             /// Sender/Receiver name and time & Forwarded/Edited Text
@@ -552,19 +563,19 @@ class _MessageListState extends State<MessageList> {
                                           ],
                                         ),
                                     
-                                      /// Sender's Profile Icon
-                                      SizedBox(width: 10.w),
-                                      isSender
-                                      ? ProfileIconStatusDot(
-                                        profilePic: currentUserData['vProfilePic'],
-                                        statusColor: AppColorTheme.transparent,
-                                        statusBorderColor: AppColorTheme.transparent,
-                                        showStatusColor: false,
-                                        profileSize: 42,
-                                      )
-                                      : Container(),
-                                    ],
-                                                                    ),
+                                        /// Sender's Profile Icon
+                                        SizedBox(width: 10.w),
+                                        isSender
+                                        ? ProfileIconStatusDot(
+                                          profilePic: currentUserData['vProfilePic'],
+                                          statusColor: AppColorTheme.transparent,
+                                          statusBorderColor: AppColorTheme.transparent,
+                                          showStatusColor: false,
+                                          profileSize: 42,
+                                        )
+                                        : Container(),
+                                      ]
+                                    ),
                                   ),
                                 ],
                               ),

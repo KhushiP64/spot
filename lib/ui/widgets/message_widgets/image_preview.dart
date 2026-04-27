@@ -122,7 +122,6 @@ class _ImagePreviewState extends State<ImagePreview> {
           searchUsers: searchController,
           controller: _scrollController,
           closeForwardListModal: closeForwardListModal,
-          onSearchChanged: onChangedSearchForwardUsers,
           isGroupMsgs: false,
         )
       );
@@ -144,23 +143,6 @@ class _ImagePreviewState extends State<ImagePreview> {
       _currentPage = 1;
       searchController.clear();
     });
-  }
-
-  void onChangedSearchForwardUsers(String value) {
-    final dataListProvider = context.read<DataListProvider>();
-    final searchText = value.trim().toLowerCase();
-
-    if (searchText.isEmpty) {
-      dataListProvider.resetForwardUserFilter();
-    } else {
-      final originalList = dataListProvider.allForwardUsers;
-      final filteredData = originalList.where((item) {
-        final name = item['name']?.toString().toLowerCase() ?? '';
-        return name.contains(searchText);
-      }).toList();
-
-      dataListProvider.setForwardUsersList(filteredData);
-    }
   }
 
   void closeCreateGroupModal() async {
