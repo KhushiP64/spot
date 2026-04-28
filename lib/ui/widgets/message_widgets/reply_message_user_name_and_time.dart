@@ -17,34 +17,31 @@ class ReplyMessageUserNameAndTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              sendUserName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppFontStyles.dmSansMedium.copyWith(
-                fontSize: 11.sp,
-                color: AppColorTheme.dark70,
-              ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Text(
-            formattedTime,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          fit: FlexFit.loose,
+          child: Text(
+            sendUserName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppFontStyles.dmSansMedium.copyWith(
               fontSize: 11.sp,
-              color: AppColorTheme.dark40,
+              color: AppColorTheme.dark70,
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Text(
+          formattedTime,
+          style: AppFontStyles.dmSansMedium.copyWith(
+            fontSize: 11.sp,
+            color: AppColorTheme.dark40,
+          ),
+        )
+      ],
     );
   }
 }

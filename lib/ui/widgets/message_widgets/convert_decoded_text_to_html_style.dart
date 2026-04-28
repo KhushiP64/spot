@@ -83,8 +83,7 @@ class _ConvertDecodedTextToHtmlStyleState
 
     /// Highlighted text
     if (highlight != null && highlight.isNotEmpty) {
-      final parts =
-          decoded.split(RegExp(RegExp.escape(highlight), caseSensitive: false));
+      final parts = decoded.split(RegExp(RegExp.escape(highlight), caseSensitive: false));
       return RichText(
         text: TextSpan(
           children: [
@@ -115,8 +114,7 @@ class _ConvertDecodedTextToHtmlStyleState
     return Text(
       decoded,
       softWrap: true,
-      style: AppFontStyles.dmSansRegular
-          .copyWith(fontSize: 14.sp, color: AppColorTheme.black87),
+      style: AppFontStyles.dmSansRegular.copyWith(fontSize: 14.sp, color: AppColorTheme.black87),
     );
   }
 }
