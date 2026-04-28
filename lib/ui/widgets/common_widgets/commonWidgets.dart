@@ -578,15 +578,19 @@ class CommonWidgets {
   static double chatBubbleWidth = 0.62;
 
   static Widget chatBubbleUI(
-      {required bool isSender,
+    {
+      required bool isSender,
       required double width,
       required Widget childWidget,
-      String highlightedText = ""}) {
+      double paddingAll = 10,
+      double marginVertical = 4,
+      String highlightedText = ""
+    }) {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: width),
       child: Container(
-        padding: EdgeInsets.all(10.w),
-        margin: EdgeInsets.symmetric(vertical: 4.w),
+        padding: EdgeInsets.all(paddingAll.w),
+        margin: EdgeInsets.symmetric(vertical: marginVertical.w),
         decoration: BoxDecoration(
           color: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
           borderRadius: BorderRadius.only(
@@ -698,21 +702,25 @@ class CommonWidgets {
     required bool isReplyMsgSvg
   }){
 
-    print("messageItem $messageItem");
-    print("isSender $isSender");
-    print("isReplyMsgSvg $isReplyMsgSvg");
-
   final chatProvider = context.read<ChatProvider>();
 
     return CommonWidgets.chatBubbleUI(
         isSender: isSender,
         width: MediaQuery.of(context).size.width * 0.62,
+        paddingAll: 0,
+        marginVertical: 0,
         childWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 color: AppColorTheme.white,
+                border: Border.all(
+                  color: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
+                  width: 3,
+                  strokeAlign: BorderSide.strokeAlignInside
+                ),
                 borderRadius: BorderRadius.only(
                   topLeft: isSender ? Radius.circular(12.w) : Radius.circular(0),
                   topRight: isSender ? Radius.circular(0) : Radius.circular(12.w),
@@ -720,62 +728,74 @@ class CommonWidgets {
                   bottomRight: Radius.circular(12.w),
                 )
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 2,
-                    // margin: const EdgeInsets.only(top: 11,bottom: 10,left: 8,right: 8),
-                    padding: EdgeInsets.only(top: 10,bottom: 10),
-                    decoration: const BoxDecoration(
-                      color: AppColorTheme.primary,
-                      boxShadow: [BoxShadow(color: Color.fromRGBO(0, 163, 239, 0.5), offset: Offset(2, 0), blurRadius: 9, spreadRadius: 0,),],
+              child: IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 2,
+                      margin: EdgeInsets.only(right: 8.w),
+                      padding: EdgeInsets.only(top: 12.h, bottom: 10.h),
+                      decoration: BoxDecoration(
+                        color: AppColorTheme.primary,
+                        borderRadius: BorderRadius.all(Radius.circular(2.r)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 163, 239, 0.5),
+                            offset: Offset(2, 0),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ReplyMessageUserNameAndTime(
-                          formattedTime: CommonFunctions.dateFormat(messageItem['vReplyMsgData']['vReplyDate']),
-                          sendUserName: messageItem['vReplyMsgData']['vReplyUserName'],
-                        ),
-                        SizedBox(height: 6),
-
-                        if (messageItem['vReplyMsgData']['vReplyFilePath'] != "")
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: isReplyMsgSvg
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ReplyMessageUserNameAndTime(
+                            formattedTime: CommonFunctions.dateFormat(messageItem['vReplyMsgData']['vReplyDate']),
+                            sendUserName: messageItem['vReplyMsgData']['vReplyUserName'],
+                          ),
+                          SizedBox(height: 6),
+                
+                          if (messageItem['vReplyMsgData']['vReplyFilePath'] != "")
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: isReplyMsgSvg
                                       ? SvgPicture.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, placeholderBuilder: (context) => const SizedBox(height: 140, child: Center(child: CircularProgressIndicator())),)
                                       : Image.network(messageItem['vReplyMsgData']['vReplyFilePath'], height: 120, width: double.infinity, fit: BoxFit.cover, errorBuilder: (context, error, stack) => const SizedBox(height: 140, child: Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey,))),
                                       loadingBuilder: (context, child, loadingProgress) {
                                         if (loadingProgress == null) return child;
                                         return const SizedBox(height: 140, child: Center(child: CircularProgressIndicator()));
                                       }
+                                    ),
                                   ),
-                                ),
-                                // const SizedBox(height: 6),
-                                ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyFileName'],highlightText: chatProvider.searchController.text,),
-                              ],
-                            ),
-                          )
-                        else
-                          ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyMsg'],highlightText: chatProvider.searchController.text,),
-                      ],
-                    ),
-                  )
-                ],
+                                  // const SizedBox(height: 6),
+                                  ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyFileName'],highlightText: chatProvider.searchController.text,),
+                                ],
+                              ),
+                            )
+                          else
+                            ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['vReplyMsg'],highlightText: chatProvider.searchController.text,),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
 
-            ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['message'],highlightText: chatProvider.searchController.text, ),
-
+            Padding(
+              padding: EdgeInsets.all(10.w),
+              child: ConvertDecodedTextToHtmlStyle(message: messageItem['vReplyMsgData']['message'], highlightText: chatProvider.searchController.text),
+            ),
           ],
         )
     );
