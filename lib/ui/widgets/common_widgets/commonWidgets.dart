@@ -708,7 +708,7 @@ class CommonWidgets {
         isSender: isSender,
         width: MediaQuery.of(context).size.width * 0.62,
         paddingAll: 0,
-        marginVertical: 0,
+        marginVertical: 4,
         childWidget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -718,7 +718,7 @@ class CommonWidgets {
                 color: AppColorTheme.white,
                 border: Border.all(
                   color: isSender ? AppColorTheme.senderMsgBg : AppColorTheme.receiverMsgBg,
-                  width: 3,
+                  width: 3.5,
                   strokeAlign: BorderSide.strokeAlignInside
                 ),
                 borderRadius: BorderRadius.only(

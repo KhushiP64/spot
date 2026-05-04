@@ -36,12 +36,14 @@ class UserChatMessageBox extends StatefulWidget {
   final String? formattedTime;
 
   UserChatMessageBox(
-      {super.key,
+    {
+      super.key,
       required this.sendMessageText,
       this.focusNode,
       this.onChangedSendMessageText,
       required this.type,
-      this.formattedTime});
+      this.formattedTime
+    });
 
   @override
   State<UserChatMessageBox> createState() => _UserChatMessageBoxState();
@@ -713,12 +715,13 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
         message: chatProvider.isUserEditing ? chatProvider.userEditingText : "",
         style: {
           "body": Style(
-              margin: Margins.zero,
-              padding: HtmlPaddings.zero,
-              fontSize: FontSize(14),
-              color: AppColorTheme.dark87,
-              maxLines: 2,
-              textOverflow: TextOverflow.ellipsis)
+            margin: Margins.zero,
+            padding: HtmlPaddings.zero,
+            fontSize: FontSize(14),
+            color: AppColorTheme.dark87,
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis
+          )
         });
   }
 
@@ -751,27 +754,19 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
       if (style.attributes.isNotEmpty) {
         _lastKnownStyle = Map.from(style.attributes);
       }
-      if (style.attributes.isEmpty &&
-          _controller.document.length == 1 &&
-          _lastKnownStyle.isNotEmpty &&
-          selection.isValid) {
+      if (style.attributes.isEmpty && _controller.document.length == 1 && _lastKnownStyle.isNotEmpty && selection.isValid) {
         _lastKnownStyle.forEach((key, attr) {
           _controller.formatSelection(attr);
         });
       }
 
-      final useStyle =
-          (style.attributes.isEmpty && _controller.document.length == 1)
-              ? _lastKnownStyle
-              : style.attributes;
+      final useStyle = (style.attributes.isEmpty && _controller.document.length == 1) ? _lastKnownStyle : style.attributes;
 
       setState(() {
         isBoldSelected = useStyle.containsKey(quill.Attribute.bold.key);
         isItalicSelected = useStyle.containsKey(quill.Attribute.italic.key);
-        isUnderlineSelected =
-            useStyle.containsKey(quill.Attribute.underline.key);
-        isStrikeThroughSelected =
-            useStyle.containsKey(quill.Attribute.strikeThrough.key);
+        isUnderlineSelected = useStyle.containsKey(quill.Attribute.underline.key);
+        isStrikeThroughSelected = useStyle.containsKey(quill.Attribute.strikeThrough.key);
         isBulletSelected = useStyle.containsKey(quill.Attribute.ul.key);
         isLinkSelected = useStyle.containsKey(quill.Attribute.link.key);
       });
@@ -786,8 +781,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
     final plainText = _controller.document.toPlainText().trim();
     if (plainText.isNotEmpty) {
       final now = DateTime.now();
-      if (_lastTypingTime == null ||
-          now.difference(_lastTypingTime!) > _typingDelay) {
+      if (_lastTypingTime == null || now.difference(_lastTypingTime!) > _typingDelay) {
         _handleTyping(plainText);
         _lastTypingTime = now;
       }
@@ -2932,8 +2926,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
         quill.Attribute.fromKeyValue('color', hexColor),
       );
 
-      lastLinkedText =
-          _controller.document.getPlainText(baseOffset, extentOffset);
+      lastLinkedText = _controller.document.getPlainText(baseOffset, extentOffset);
       lastLinkedUrl = link;
 
       _controller.updateSelection(
@@ -3006,23 +2999,23 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                    color: AppColorTheme.border,
-                    strokeAlign: BorderSide.strokeAlignInside),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 8),
-                      blurRadius: 16.r,
-                      spreadRadius: 0,
-                      color: Color.fromRGBO(10, 41, 55, 0.12)),
-                  BoxShadow(
-                      offset: Offset(0, 1),
-                      blurRadius: 2.r,
-                      spreadRadius: 0,
-                      color: Color.fromRGBO(10, 41, 55, 0.16)),
-                ]),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: AppColorTheme.border, strokeAlign: BorderSide.strokeAlignInside),
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, 8),
+                  blurRadius: 16.r,
+                  spreadRadius: 0,
+                  color: Color.fromRGBO(10, 41, 55, 0.12)
+                ),
+                BoxShadow(
+                  offset: Offset(0, 1),
+                  blurRadius: 2.r,
+                  spreadRadius: 0,
+                  color: Color.fromRGBO(10, 41, 55, 0.16)
+                ),
+              ]),
             padding: EdgeInsets.only(left: 16.w),
             child: Column(
               children: [
@@ -3030,8 +3023,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                 if (isReplying) replyPreviewWidget(chatProvider),
                 if (isEditing) editPreviewWidget(chatProvider),
                 if (isUploadingFile)
-                  CommonWidgets.uploadPreviewWidget(
-                      chatProvider, allowedFileTypes),
+                  CommonWidgets.uploadPreviewWidget(chatProvider, allowedFileTypes),
                 Row(
                   children: [
                     Expanded(
@@ -3060,8 +3052,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                             return null;
                           },
                           customStyleBuilder: (quill.Attribute? attribute) {
-                            if (attribute != null &&
-                                attribute.key == quill.Attribute.link.key) {
+                            if (attribute != null && attribute.key == quill.Attribute.link.key) {
                               return AppFontStyles.dmSansRegular.copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
@@ -3070,9 +3061,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                                 decorationColor: AppColorTheme.primary,
                               );
                             }
-                            return AppFontStyles.dmSansRegular.copyWith(
-                              fontSize: 16.sp,
-                            );
+                            return AppFontStyles.dmSansRegular.copyWith(fontSize: 16.sp);
                           },
                           autoFocus: false,
                           showCursor: true,
@@ -3080,8 +3069,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                           placeholder: "Type your text here...",
                           customStyles: quill.DefaultStyles(
                             placeHolder: quill.DefaultTextBlockStyle(
-                              AppFontStyles.dmSansRegular.copyWith(
-                                  color: AppColorTheme.dark66, fontSize: 12.sp),
+                              AppFontStyles.dmSansRegular.copyWith(color: AppColorTheme.dark66, fontSize: 12.sp),
                               quill.HorizontalSpacing.zero,
                               quill.VerticalSpacing.zero,
                               quill.VerticalSpacing.zero,
@@ -3094,9 +3082,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                     ),
                     if (!isEditing)
                       IconButton(
-                        padding: isReplying
-                            ? const EdgeInsets.only(left: 23)
-                            : const EdgeInsets.only(left: 0),
+                        padding: isReplying ? const EdgeInsets.only(left: 23) : const EdgeInsets.only(left: 0),
                         onPressed: openMenuBottomSheet,
                         icon: SvgPicture.asset(AppMedia.moreMenu),
                       ),
@@ -3126,9 +3112,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
               double opacity = 0.5;
               Color iconColor = AppColorTheme.primaryHover.withOpacity(0.7);
 
-              if ((isUploadingFile && isAnyAllowedFile.isNotEmpty) ||
-                  isMessageTyped ||
-                  (isReplying && isMessageTyped)) {
+              if ((isUploadingFile && isAnyAllowedFile.isNotEmpty) || isMessageTyped || (isReplying && isMessageTyped)) {
                 opacity = 1.0;
                 iconColor = AppColorTheme.primaryHover;
               } else {
@@ -3288,9 +3272,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
     // final currentUserId = currentUserData['iUserId'];
     // print("chatProvider.selectedMsgs.first['iFromUserId'] == currentUserId ? dataListProvider.openedChatUserData['vFullName'] ${chatProvider.selectedMsgs.first['iFromUserId'] == currentUserId ? dataListProvider.openedChatUserData['vFullName'] : "You"}");
     final currentUserId = dataListProvider.openedChatUserData['iUserId'];
-    final replySenderId = chatProvider.selectedMsgs.isNotEmpty
-        ? chatProvider.selectedMsgs.first['iFromUserId']
-        : chatProvider.userReplySenderId;
+    final replySenderId = chatProvider.selectedMsgs.isNotEmpty ? chatProvider.selectedMsgs.first['iFromUserId'] : chatProvider.userReplySenderId;
 
     // print("chatProvider.userReplySenderId: ${chatProvider.userReplySenderId}");
 
@@ -3304,130 +3286,118 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
     //   final document = parse(htmlString);
     //   return document.body?.text.trim() ?? '';
     // }
-    return IntrinsicHeight(
-      child: Container(
-        padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
-        margin: const EdgeInsets.only(bottom: 0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          color: AppColorTheme.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade400,
-              offset: const Offset(0, 1),
-              blurRadius: 1,
-            ),
-          ],
-          border: Border.all(color: Colors.grey.shade100),
-        ),
+    return Container(
+      // padding: EdgeInsets.only(right: 8, top: 5, bottom: 5),
+      // margin: EdgeInsets.only(bottom: 0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(9.r),
+        color: AppColorTheme.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.16),
+            offset: Offset(0, 1),
+            blurRadius: 2,
+            spreadRadius: 0
+          ),
+          BoxShadow(
+            color: Color.fromRGBO(10, 41, 55, 0.1),
+            offset: Offset(0, 1),
+            blurRadius: 6,
+            spreadRadius: 0
+          ),
+        ],
+        // border: Border.all(color: Colors.grey.shade100),
+      ),
+      child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: 2,
-              margin:
-                  const EdgeInsets.only(right: 8, top: 3, left: 5, bottom: 3),
-              decoration: const BoxDecoration(
+              // margin: EdgeInsets.only(right: 8.w, left: 8.w, top: 3.h, bottom: 3.h),
+              // padding: EdgeInsets.only(top: 12.h, bottom: 10.h),
+              decoration: BoxDecoration(
                 color: AppColorTheme.primary,
+                borderRadius: BorderRadius.all(Radius.circular(2.r)),
                 boxShadow: [
                   BoxShadow(
                     color: Color.fromRGBO(0, 163, 239, 0.5),
                     offset: Offset(2, 0),
-                    blurRadius: 9,
+                    blurRadius: 8,
                     spreadRadius: 0,
                   ),
                 ],
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (chatProvider.selectedMsgs.isNotEmpty ||
-                        chatProvider.userReplySenderId != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child:
-                            // Text(
-                            //   // chatProvider.selectedMsgs.first['iFromUserId'] == currentUserId ? dataListProvider.openedChatUserData['vFullName'] : "You",
-                            //   isSender ? "You" : dataListProvider.openedChatUserData.isNotEmpty ? dataListProvider.openedChatUserData['vFullName'] : "",
-                            //   style: ResponsiveFontStyles.dmSans13Medium(context).copyWith(fontSize: 14, color: AppColorTheme.dark70,),
-                            // ),
-                            Text(
-                          isSender
-                              ? dataListProvider
-                                      .openedChatUserData['vFullName'] ??
-                                  ""
-                              : "You",
-                          style: AppFontStyles.dmSansMedium.copyWith(
-                              fontSize: 13.sp, color: AppColorTheme.dark70),
-                        ),
-                      ),
-                    const SizedBox(height: 6),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (chatProvider.userReplyHasFile &&
-                            chatProvider.userReplyFileThumb.isNotEmpty) ...[
-                          CommonFunctions.isImageFileSvg(
-                                  chatProvider.userReplyFileThumb)
-                              ? SvgPicture.network(
-                                  chatProvider.userReplyFileThumb,
-                                  width: 36,
-                                  height: 36,
-                                  fit: BoxFit.cover,
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.network(
-                                    chatProvider.userReplyFileThumb,
-                                    width: 36,
-                                    height: 36,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              chatProvider.userReplyFileName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppFontStyles.dmSansRegular.copyWith(
-                                fontSize: 14.sp,
-                                color: AppColorTheme.dark87,
-                              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (chatProvider.selectedMsgs.isNotEmpty || chatProvider.userReplySenderId != null)
+                    Text(
+                      isSender
+                      ? dataListProvider.openedChatUserData['vFullName'] ?? ""
+                      : "You",
+                      style: AppFontStyles.dmSansMedium.copyWith(fontSize: 13.sp, color: AppColorTheme.dark70),
+                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (chatProvider.userReplyHasFile && chatProvider.userReplyFileThumb.isNotEmpty) ...[
+                        CommonFunctions.isImageFileSvg(chatProvider.userReplyFileThumb)
+                          ? SvgPicture.network(
+                            chatProvider.userReplyFileThumb,
+                            width: 36,
+                            height: 36,
+                            fit: BoxFit.cover,
+                          )
+                          : ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: Image.network(
+                              chatProvider.userReplyFileThumb,
+                              width: 36,
+                              height: 36,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ] else
-                          Expanded(
-                              child: ConvertDecodedTextToHtmlStyle(
-                                  message: chatProvider.isUserReplying
-                                      ? chatProvider.userReplyText
-                                      : "",
-                                  style: {
-                                "body": Style(
-                                    margin: Margins.zero,
-                                    padding: HtmlPaddings.zero,
-                                    fontSize: FontSize(14),
-                                    color: AppColorTheme.dark87,
-                                    maxLines: 2,
-                                    textOverflow: TextOverflow.ellipsis)
-                              })),
-                        // Expanded(child: Html(data: htmlContent, style: {'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero, fontSize: FontSize(14), color: AppColorTheme.dark87, maxLines: 2, textOverflow: TextOverflow.ellipsis,),},),),
-                      ],
-                    ),
-                  ],
-                ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            chatProvider.userReplyFileName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppFontStyles.dmSansRegular.copyWith(
+                              fontSize: 14.sp,
+                              color: AppColorTheme.dark87,
+                            ),
+                          ),
+                        ),
+                      ] else
+                        Expanded(
+                          child: ConvertDecodedTextToHtmlStyle(
+                            message: chatProvider.isUserReplying
+                            ? chatProvider.userReplyText
+                            : "",
+                            style: {
+                            "body": Style(
+                              margin: Margins.zero,
+                              padding: HtmlPaddings.zero,
+                              fontSize: FontSize(14),
+                              color: AppColorTheme.dark87,
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis
+                            )
+                          })
+                        ),
+                      // Expanded(child: Html(data: htmlContent, style: {'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero, fontSize: FontSize(14), color: AppColorTheme.dark87, maxLines: 2, textOverflow: TextOverflow.ellipsis,),},),),
+                    ],
+                  ),
+                ],
               ),
             ),
-            IconButton(
-              padding: const EdgeInsets.only(left: 20, bottom: 20),
-              constraints: const BoxConstraints(),
-              icon:
-                  const Icon(Icons.close, size: 18, color: AppColorTheme.muted),
-              onPressed: cancelReplyMessage,
+            InkWell(
+              onTap: cancelReplyMessage,
+              child: SvgPicture.asset(AppMedia.closeFormatter, color: AppColorTheme.muted,),
             ),
           ],
         ),
@@ -3471,21 +3441,21 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
       }
     }
 
-    final quillController =
-        chatProvider.isUserEditing ? getQuillController() : null;
+    final quillController = chatProvider.isUserEditing ? getQuillController() : null;
 
     return IntrinsicHeight(
       child: Container(
-        padding: const EdgeInsets.only(right: 8, top: 5, bottom: 5),
-        margin: const EdgeInsets.only(bottom: 0),
+        padding: EdgeInsets.only(right: 8, top: 5, bottom: 5),
+        margin: EdgeInsets.only(bottom: 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: AppColorTheme.white,
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade400,
-                offset: const Offset(0, 1),
-                blurRadius: 1),
+              color: Colors.grey.shade400,
+              offset: const Offset(0, 1),
+              blurRadius: 1
+            ),
           ],
           border: Border.all(color: Colors.grey.shade100),
         ),
