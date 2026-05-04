@@ -3287,8 +3287,8 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
     //   return document.body?.text.trim() ?? '';
     // }
     return Container(
-      // padding: EdgeInsets.only(right: 8, top: 5, bottom: 5),
-      // margin: EdgeInsets.only(bottom: 0),
+      padding: EdgeInsets.all(9.w),
+      margin: EdgeInsets.only(bottom: 0, left: 12.w, right: 12.w, top: 12.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9.r),
         color: AppColorTheme.white,
@@ -3314,8 +3314,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
           children: [
             Container(
               width: 2,
-              // margin: EdgeInsets.only(right: 8.w, left: 8.w, top: 3.h, bottom: 3.h),
-              // padding: EdgeInsets.only(top: 12.h, bottom: 10.h),
+              margin: EdgeInsets.only(right: 13.w),
               decoration: BoxDecoration(
                 color: AppColorTheme.primary,
                 borderRadius: BorderRadius.all(Radius.circular(2.r)),
@@ -3337,7 +3336,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                     Text(
                       isSender
                       ? dataListProvider.openedChatUserData['vFullName'] ?? ""
-                      : "You",
+                      : "YouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYouYou",
                       style: AppFontStyles.dmSansMedium.copyWith(fontSize: 13.sp, color: AppColorTheme.dark70),
                     ),
                   Row(
@@ -3376,7 +3375,7 @@ class _UserChatMessageBoxState extends State<UserChatMessageBox> {
                         Expanded(
                           child: ConvertDecodedTextToHtmlStyle(
                             message: chatProvider.isUserReplying
-                            ? chatProvider.userReplyText
+                            ? "chatProvider.userReplyText"
                             : "",
                             style: {
                             "body": Style(
