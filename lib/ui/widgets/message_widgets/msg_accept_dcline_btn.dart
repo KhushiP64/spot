@@ -13,11 +13,13 @@ class MsgAcceptDeclineBtn extends StatefulWidget {
   final String sendUserName;
 
   const MsgAcceptDeclineBtn(
-      {super.key,
+    {
+      super.key,
       required this.messageItem,
       required this.onPressAcceptChatRequest,
       required this.formattedTime,
-      required this.sendUserName});
+      required this.sendUserName
+    });
 
   @override
   State<MsgAcceptDeclineBtn> createState() => _MsgAcceptDeclineBtnState();
@@ -49,68 +51,63 @@ class _MsgAcceptDeclineBtnState extends State<MsgAcceptDeclineBtn> {
                     margin: EdgeInsets.only(left: 12.w),
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                        color: AppColorTheme.receiverMsgBg,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(0),
-                            topRight: Radius.circular(12.r),
-                            bottomLeft: Radius.circular(12.r),
-                            bottomRight: Radius.circular(12.r))),
+                      color: AppColorTheme.receiverMsgBg,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(0),
+                        topRight: Radius.circular(12.r),
+                        bottomLeft: Radius.circular(12.r),
+                        bottomRight: Radius.circular(12.r)
+                      )
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(widget.messageItem['vMsgData']['message'],
-                            style: AppFontStyles.dmSansMedium.copyWith(
-                              fontSize: 14.w,
-                              color: AppColorTheme.inputTitle,
-                            )),
+                          style: AppFontStyles.dmSansMedium.copyWith(
+                            fontSize: 14.w,
+                            color: AppColorTheme.inputTitle,
+                          )
+                        ),
                         SizedBox(height: 12.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             ...widget.messageItem['vMsgData']['btns']
-                                .asMap()
-                                .map((index, item) {
-                                  return MapEntry(
-                                      index,
-                                      Expanded(
-                                        child: Container(
-                                            margin: EdgeInsets.only(
-                                                right: index == 0 ? 10.w : 0),
-                                            child: Button(
-                                                // paddingHorizontal: 18.w,
-                                                boxShadow: [],
-                                                onPressed: () {
-                                                  widget
-                                                      .onPressAcceptChatRequest(
-                                                          item);
-                                                },
-                                                title: item['name'],
-                                                textColor: Color(int.parse(
-                                                    item['fontcolor']
-                                                        .replaceFirst(
-                                                            '#', '0xFF'))),
-                                                backgroundColor: Color(
-                                                    int.parse(item['color']
-                                                        .replaceFirst(
-                                                            '#', '0xFF'))))),
-                                      ));
-                                })
-                                .values
-                                .toList(),
+                            .asMap()
+                            .map((index, item) {
+                              return MapEntry(
+                                index,
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: index == 0 ? 10.w : 0),
+                                    child: Button(
+                                      // paddingHorizontal: 18.w,
+                                      boxShadow: [],
+                                      onPressed: () {
+                                        widget.onPressAcceptChatRequest(item);
+                                      },
+                                      title: item['name'],
+                                      textColor: Color(int.parse(item['fontcolor'].replaceFirst('#', '0xFF'))),
+                                      backgroundColor: Color(int.parse(item['color'].replaceFirst('#', '0xFF')))
+                                    )
+                                  ),
+                                )
+                              );
+                            }).values.toList(),
                           ],
                         )
                       ],
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(left: 13, top: 5),
-                      child: MessageUserNameAndTime(
-                        formattedTime: widget.formattedTime,
-                        sendUserName: widget.sendUserName,
-                        isForwarded:
-                            int.parse(widget.messageItem['isForwardMsg']),
-                        isEdited: widget.messageItem['iEdited'],
-                      ))
+                    padding: EdgeInsets.only(left: 13, top: 5),
+                    child: MessageUserNameAndTime(
+                      formattedTime: widget.formattedTime,
+                      sendUserName: widget.sendUserName,
+                      isForwarded: widget.messageItem['isForwardMsg'] == "" ? 0 : int.parse(widget.messageItem['isForwardMsg']),
+                      isEdited: widget.messageItem['iEdited'],
+                    )
+                  )
                 ],
               ),
             ),
